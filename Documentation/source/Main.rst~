@@ -1,0 +1,5 @@
+.. automodule:: norm.normalizer
+
+.. autoclass:: norm.normalizer.Normalizer
+
+.. automodule:: norm.util

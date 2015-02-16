@@ -1,0 +1,219 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Modules &mdash; NoUGaT 1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="NoUGaT 1 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">NoUGaT 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="module-norm.modules.abbreviation">
+<span id="modules"></span><h1>Modules<a class="headerlink" href="#module-norm.modules.abbreviation" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="norm.modules.abbreviation.Abbreviation">
+<em class="property">class </em><tt class="descclassname">norm.modules.abbreviation.</tt><tt class="descname">Abbreviation</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/abbreviation.html#Abbreviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.abbreviation.Abbreviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This module resolves the most frequent abbreviations
+in social media content</p>
+<dl class="method">
+<dt id="norm.modules.abbreviation.Abbreviation.check_hunspell">
+<tt class="descname">check_hunspell</tt><big>(</big><em>word</em><big>)</big><a class="reference internal" href="_modules/norm/modules/abbreviation.html#Abbreviation.check_hunspell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.abbreviation.Abbreviation.check_hunspell" title="Permalink to this definition">¶</a></dt>
+<dd><p>check word for spelling
+<strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::
+param word: a word
+type word: unicode string
+:return: return True or False dependent on word being in dict or not
+:rtype: boolean</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.abbreviation.Abbreviation.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/abbreviation.html#Abbreviation.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.abbreviation.Abbreviation.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<p><strong>parameters</strong>, <strong>types</strong>,**return types**::
+:param sentence: flooding corrected original message
+:type sentence: unicode string 
+:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]
+:rtype: list of lists</p>
+<p>Looks up a token in an abbreviation lexicon and returns the long version in case the token is found.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.compound"></span><dl class="class">
+<dt id="norm.modules.compound.Compound">
+<em class="property">class </em><tt class="descclassname">norm.modules.compound.</tt><tt class="descname">Compound</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/compound.html#Compound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.compound.Compound" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which subsequent words can be checked for &#8220;compoundness&#8221;.
+If the spellchecker (hunspell) doesn&#8217;t complain about the combination of subsequent words,
+it is returned as an option.</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.empty"></span><dl class="class">
+<dt id="norm.modules.empty.Empty">
+<em class="property">class </em><tt class="descclassname">norm.modules.empty.</tt><tt class="descname">Empty</tt><a class="reference internal" href="_modules/norm/modules/empty.html#Empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.empty.Empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assuming that words can be superfluous, this module returns an empty string.</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.flooding"></span><dl class="class">
+<dt id="norm.modules.flooding.Flooding">
+<em class="property">class </em><tt class="descclassname">norm.modules.flooding.</tt><tt class="descname">Flooding</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding" title="Permalink to this definition">¶</a></dt>
+<dd><p>this class corrects the flooding of characters and punctionation,
+it reduces flooding to one and two characters and checks whether a correct word emerges
+with the help of spell checking. In case it does it returns the whole sentence
+It also corrects punctuation flooding. It does that in any case.</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.new_NE"></span><dl class="class">
+<dt id="norm.modules.new_NE.New_NE">
+<em class="property">class </em><tt class="descclassname">norm.modules.new_NE.</tt><tt class="descname">New_NE</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE" title="Permalink to this definition">¶</a></dt>
+<dd><p>This module uses a crf model to predict whether a token is a 
+named entity or not. 
+This modules in not included by default.</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.original"></span><dl class="class">
+<dt id="norm.modules.original.Original">
+<em class="property">class </em><tt class="descclassname">norm.modules.original.</tt><tt class="descname">Original</tt><a class="reference internal" href="_modules/norm/modules/original.html#Original"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.original.Original" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions which return the original
+as an option</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.phonemic"></span><dl class="class">
+<dt id="norm.modules.phonemic.Phonemic">
+<em class="property">class </em><tt class="descclassname">norm.modules.phonemic.</tt><tt class="descname">Phonemic</tt><a class="reference internal" href="_modules/norm/modules/phonemic.html#Phonemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.phonemic.Phonemic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Access via web service the MBT grapeme-to-phoneme-to-grapheme conversion.
+Implemented by Guy DePauw.</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.smt"></span><dl class="class">
+<dt id="norm.modules.smt.SMT_Token">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Token</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Token" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on the token level can be performed.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="norm.modules.smt.SMT_Cascaded">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Cascaded</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Cascaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Cascaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on first the token 
+and subsequently on the unigram level can be performed.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="norm.modules.smt.SMT_Unigram">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Unigram</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Unigram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Unigram" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on the unigram level can be performed.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="norm.modules.smt.SMT_Bigram">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Bigram</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Bigram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Bigram" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on the bigram level can be performed.</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.spellcheck"></span><dl class="class">
+<dt id="norm.modules.spellcheck.Hunspell">
+<em class="property">class </em><tt class="descclassname">norm.modules.spellcheck.</tt><tt class="descname">Hunspell</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/spellcheck.html#Hunspell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.spellcheck.Hunspell" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions that check a word with the hunspell spell checker.
+In case it is recognized as incorrectly spelled, alternative spelling options are suggested</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.transliterate"></span><dl class="class">
+<dt id="norm.modules.transliterate.Transliterate">
+<em class="property">class </em><tt class="descclassname">norm.modules.transliterate.</tt><tt class="descname">Transliterate</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/transliterate.html#Transliterate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.transliterate.Transliterate" title="Permalink to this definition">¶</a></dt>
+<dd><p>use a transliterate approach on character level. Used classifier is MBT.
+The class has been implemented by Guy DePauw.</p>
+</dd></dl>
+
+<span class="target" id="module-norm.modules.wordsplit"></span><dl class="class">
+<dt id="norm.modules.wordsplit.Word_Split">
+<em class="property">class </em><tt class="descclassname">norm.modules.wordsplit.</tt><tt class="descname">Word_Split</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/wordsplit.html#Word_Split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.wordsplit.Word_Split" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which subsequent words can be checked for &#8220;compoundness&#8221;.
+It uses word frequencies from the cgn corpus to decide if a word should be split or not.
+It makes use of the decompounder perl script that comes together with Moses.</p>
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/Modules.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">NoUGaT 1 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Sarah Schulz, Bart Desmet, Orphee DeClercq.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

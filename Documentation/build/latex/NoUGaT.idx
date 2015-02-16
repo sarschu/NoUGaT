@@ -1,0 +1,88 @@
+\indexentry{norm.data (module)|hyperpage}{9}
+\indexentry{Text (class in norm.data)|hyperpage}{9}
+\indexentry{\_preprocess() (norm.data.Text method)|hyperpage}{9}
+\indexentry{\_validate\_input() (norm.data.Text method)|hyperpage}{9}
+\indexentry{norm.prepro.rewrite (module)|hyperpage}{9}
+\indexentry{Rewrite (class in norm.prepro.rewrite)|hyperpage}{9}
+\indexentry{correct\_at\_tok() (norm.prepro.rewrite.Rewrite method)|hyperpage}{9}
+\indexentry{reduce\_allcaps() (norm.prepro.rewrite.Rewrite method)|hyperpage}{9}
+\indexentry{replace\_hashtags() (norm.prepro.rewrite.Rewrite method)|hyperpage}{10}
+\indexentry{replace\_hyperlinks() (norm.prepro.rewrite.Rewrite method)|hyperpage}{10}
+\indexentry{replace\_linebreaks() (norm.prepro.rewrite.Rewrite method)|hyperpage}{10}
+\indexentry{replace\_pipe() (norm.prepro.rewrite.Rewrite method)|hyperpage}{10}
+\indexentry{replace\_smileys() (norm.prepro.rewrite.Rewrite method)|hyperpage}{10}
+\indexentry{replace\_spaces() (norm.prepro.rewrite.Rewrite method)|hyperpage}{10}
+\indexentry{replace\_tags() (norm.prepro.rewrite.Rewrite method)|hyperpage}{11}
+\indexentry{rewrite\_text() (norm.prepro.rewrite.Rewrite method)|hyperpage}{11}
+\indexentry{tokenize() (norm.prepro.rewrite.Rewrite method)|hyperpage}{11}
+\indexentry{tokenize\_placeholders() (norm.prepro.rewrite.Rewrite method)|hyperpage}{11}
+\indexentry{tolower() (norm.prepro.rewrite.Rewrite method)|hyperpage}{12}
+\indexentry{norm.modules.flooding (module)|hyperpage}{12}
+\indexentry{Flooding (class in norm.modules.flooding)|hyperpage}{12}
+\indexentry{check\_for\_correctness() (norm.modules.flooding.Flooding method)|hyperpage}{12}
+\indexentry{correct\_flooding\_to\_one() (norm.modules.flooding.Flooding method)|hyperpage}{12}
+\indexentry{correct\_flooding\_to\_two() (norm.modules.flooding.Flooding method)|hyperpage}{12}
+\indexentry{correct\_punctuation\_flooding() (norm.modules.flooding.Flooding method)|hyperpage}{12}
+\indexentry{flooding\_correct() (norm.modules.flooding.Flooding method)|hyperpage}{13}
+\indexentry{hunspell\_check() (norm.modules.flooding.Flooding method)|hyperpage}{13}
+\indexentry{norm.normalizer (module)|hyperpage}{13}
+\indexentry{Normalizer (class in norm.normalizer)|hyperpage}{13}
+\indexentry{\_call\_moses() (norm.normalizer.Normalizer method)|hyperpage}{13}
+\indexentry{\_check\_hunspell() (norm.normalizer.Normalizer method)|hyperpage}{14}
+\indexentry{\_generate\_phrase\_table() (norm.normalizer.Normalizer method)|hyperpage}{14}
+\indexentry{\_kill\_server\_mode() (norm.normalizer.Normalizer method)|hyperpage}{14}
+\indexentry{\_normalize\_sentence() (norm.normalizer.Normalizer method)|hyperpage}{14}
+\indexentry{\_write\_phrase\_table() (norm.normalizer.Normalizer method)|hyperpage}{14}
+\indexentry{initialize\_modules() (norm.normalizer.Normalizer method)|hyperpage}{15}
+\indexentry{normalize\_text() (norm.normalizer.Normalizer method)|hyperpage}{15}
+\indexentry{start\_server\_mode() (norm.normalizer.Normalizer method)|hyperpage}{15}
+\indexentry{norm.modules.abbreviation (module)|hyperpage}{15}
+\indexentry{Abbreviation (class in norm.modules.abbreviation)|hyperpage}{15}
+\indexentry{check\_hunspell() (norm.modules.abbreviation.Abbreviation method)|hyperpage}{15}
+\indexentry{generate\_alternatives() (norm.modules.abbreviation.Abbreviation method)|hyperpage}{16}
+\indexentry{norm.modules.compound (module)|hyperpage}{16}
+\indexentry{Compound (class in norm.modules.compound)|hyperpage}{16}
+\indexentry{check\_hunspell() (norm.modules.compound.Compound method)|hyperpage}{16}
+\indexentry{generate\_alternatives() (norm.modules.compound.Compound method)|hyperpage}{16}
+\indexentry{norm.modules.empty (module)|hyperpage}{16}
+\indexentry{Empty (class in norm.modules.empty)|hyperpage}{16}
+\indexentry{generate\_alternatives() (norm.modules.empty.Empty method)|hyperpage}{16}
+\indexentry{norm.modules.new\_NE (module)|hyperpage}{16}
+\indexentry{New\_NE (class in norm.modules.new\_NE)|hyperpage}{16}
+\indexentry{\_replace\_atreplies() (norm.modules.new\_NE.New\_NE method)|hyperpage}{17}
+\indexentry{\_run\_named\_entity\_replace() (norm.modules.new\_NE.New\_NE method)|hyperpage}{17}
+\indexentry{clean\_up() (norm.modules.new\_NE.New\_NE method)|hyperpage}{17}
+\indexentry{generate\_alternatives() (norm.modules.new\_NE.New\_NE method)|hyperpage}{17}
+\indexentry{get\_labels() (norm.modules.new\_NE.New\_NE method)|hyperpage}{17}
+\indexentry{make\_feature\_file() (norm.modules.new\_NE.New\_NE method)|hyperpage}{17}
+\indexentry{run\_texsis() (norm.modules.new\_NE.New\_NE method)|hyperpage}{18}
+\indexentry{write\_file() (norm.modules.new\_NE.New\_NE method)|hyperpage}{18}
+\indexentry{norm.modules.original (module)|hyperpage}{18}
+\indexentry{Original (class in norm.modules.original)|hyperpage}{18}
+\indexentry{generate\_alternatives() (norm.modules.original.Original method)|hyperpage}{18}
+\indexentry{norm.modules.phonemic (module)|hyperpage}{18}
+\indexentry{Phonemic (class in norm.modules.phonemic)|hyperpage}{18}
+\indexentry{generate\_alternatives() (norm.modules.phonemic.Phonemic method)|hyperpage}{18}
+\indexentry{norm.modules.smt (module)|hyperpage}{18}
+\indexentry{SMT\_Token (class in norm.modules.smt)|hyperpage}{18}
+\indexentry{generate\_alternatives() (norm.modules.smt.SMT\_Token method)|hyperpage}{18}
+\indexentry{SMT\_Cascaded (class in norm.modules.smt)|hyperpage}{19}
+\indexentry{generate\_alternatives() (norm.modules.smt.SMT\_Cascaded method)|hyperpage}{19}
+\indexentry{SMT\_Unigram (class in norm.modules.smt)|hyperpage}{19}
+\indexentry{generate\_alternatives() (norm.modules.smt.SMT\_Unigram method)|hyperpage}{19}
+\indexentry{SMT\_Bigram (class in norm.modules.smt)|hyperpage}{19}
+\indexentry{generate\_alternatives() (norm.modules.smt.SMT\_Bigram method)|hyperpage}{19}
+\indexentry{norm.modules.spellcheck (module)|hyperpage}{19}
+\indexentry{Hunspell (class in norm.modules.spellcheck)|hyperpage}{19}
+\indexentry{find\_suggestions() (norm.modules.spellcheck.Hunspell method)|hyperpage}{19}
+\indexentry{generate\_alternatives() (norm.modules.spellcheck.Hunspell method)|hyperpage}{20}
+\indexentry{norm.modules.wordsplit (module)|hyperpage}{20}
+\indexentry{Word\_Split (class in norm.modules.wordsplit)|hyperpage}{20}
+\indexentry{generate\_alternatives() (norm.modules.wordsplit.Word\_Split method)|hyperpage}{20}
+\indexentry{norm.util (module)|hyperpage}{20}
+\indexentry{align() (in module norm.util)|hyperpage}{20}
+\indexentry{calculate\_cer() (in module norm.util)|hyperpage}{20}
+\indexentry{calculate\_wer() (in module norm.util)|hyperpage}{21}
+\indexentry{get\_random\_phrase\_table\_path() (in module norm.util)|hyperpage}{21}
+\indexentry{get\_random\_tmp\_eval\_path() (in module norm.util)|hyperpage}{21}
+\indexentry{get\_random\_tmp\_path() (in module norm.util)|hyperpage}{21}

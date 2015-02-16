@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>norm.data &mdash; NoUGaT 1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NoUGaT 1 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../index.html" class="fa fa-home"> NoUGaT</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#system-architecture">System architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../README.html#example-of-usage">Example of usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../API.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../API.html#module-norm.data">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../API.html#module-norm.normalizer">Main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../API.html#module-norm.modules.abbreviation">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../API.html#module-norm.util">Util</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">NoUGaT</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      
+    <li>norm.data</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for norm.data</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">prepro.rewrite</span> <span class="kn">import</span> <span class="n">Rewrite</span>
+
+<span class="c">#ACCEPTED_TEXT_TYPES = (&quot;sms&quot;, &quot;sns&quot;, &quot;twe&quot;,&quot;cgn&quot;, &quot;bnc&quot;)</span>
+
+<div class="viewcode-block" id="Text"><a class="viewcode-back" href="../../API.html#norm.data.Text">[docs]</a><span class="k">class</span> <span class="nc">Text</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Represents a text, such as an SMS, a blogpost or a tweet&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	create a Text object which holds the different stages of the message: ori, prepro, output</span>
+<span class="sd">	</span>
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param n: a normalizer object</span>
+<span class="sd">		:type n: Normalizer object</span>
+<span class="sd">		:param r: object having functions to rewrite the text </span>
+<span class="sd">		:type r: Rewrite object</span>
+<span class="sd">	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span> <span class="o">=</span> <span class="n">n</span>
+	<span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_input</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_orig</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_prepro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preprocess</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="Text._validate_input"><a class="viewcode-back" href="../../API.html#norm.data.Text._validate_input">[docs]</a>    <span class="k">def</span> <span class="nf">_validate_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	validate that input string is unicode	</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param t: an input message</span>
+<span class="sd">		:type t: unicode string</span>
+<span class="sd">		:return: input is a unicode string or not</span>
+<span class="sd">		:rtype: boolean	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+        <span class="c"># Checks should return False in case of invalid input</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;Invalid input: should be a unicode string, was </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+    </div>
+<div class="viewcode-block" id="Text._preprocess"><a class="viewcode-back" href="../../API.html#norm.data.Text._preprocess">[docs]</a>    <span class="k">def</span> <span class="nf">_preprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	preprocess input text (tokenization, special character replacement)</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_orig</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s">u&#39;&#39;</span><span class="p">:</span>
+            <span class="n">prepro</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">r</span><span class="o">.</span><span class="n">rewrite_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text_orig</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_norm</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prepro</span> <span class="o">=</span> <span class="s">u&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="k">return</span> <span class="n">prepro</span>
+</pre></div></div></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sarah Schulz, Bart Desmet, Orphee DeClercq.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

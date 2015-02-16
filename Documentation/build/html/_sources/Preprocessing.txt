@@ -1,0 +1,8 @@
+Preprocessing
+=============
+
+.. automodule:: norm.data
+
+.. autoclass:: norm.data.Text
+
+.. automodule:: norm.prepro.rewrite

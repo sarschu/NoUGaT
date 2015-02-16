@@ -1,0 +1,14 @@
+You can find the html version of the documentation in build/html
+
+open index.html 
+
+If you want to build the latex version of the documentation type
+
+make latex
+
+then go to 
+build/latex and type
+
+pdflatex NoUGaT.tex
+
+and ignore the error it gives for the utf8 character.

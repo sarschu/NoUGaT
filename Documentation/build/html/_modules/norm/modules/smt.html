@@ -1,0 +1,534 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>norm.modules.smt &mdash; NoUGaT 1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NoUGaT 1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../../index.html" class="fa fa-home"> NoUGaT</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#system-architecture">System architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#example-of-usage">Example of usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.data">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.normalizer">Main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.modules.abbreviation">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.util">Util</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">NoUGaT</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>norm.modules.smt</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for norm.modules.smt</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">util</span>
+<span class="kn">from</span> <span class="nn">alignment.sequence</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">alignment.vocabulary</span> <span class="kn">import</span> <span class="n">Vocabulary</span>
+<span class="kn">from</span> <span class="nn">alignment.sequencealigner</span> <span class="kn">import</span> <span class="n">SimpleScoring</span><span class="p">,</span> <span class="n">GlobalSequenceAligner</span>
+<span class="n">smt_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;norm.module.smt&quot;</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SMT</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This class contains functions that are useful for the SMT in general. </span>
+<span class="sd">    The functions are used by the different SMT approaches like cascaded, token etc. </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">SMT</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        
+    <span class="k">def</span> <span class="nf">run_moses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">,</span><span class="nb">type</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Sent a request to the running Moses server dependent on the type of SMT you wish.</span>
+<span class="sd">	</span>
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:param type: one out of the values &quot;token&quot;, &quot;bigram&quot; or &quot;unigram&quot;</span>
+<span class="sd">		:type type: string</span>
+<span class="sd">		:return: holds the alignment, translation etc returned by the Moses server. access text via translation[&quot;text&quot;]</span>
+<span class="sd">		:rtype: dictionary</span>
+
+<span class="sd">	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">type</span> <span class="o">==</span> <span class="s">&quot;token&quot;</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;text&quot;</span><span class="p">:</span><span class="n">sentence</span><span class="p">,</span> <span class="s">&quot;align&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">,</span> <span class="s">&quot;report-all-factors&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">}</span>
+            <span class="n">translation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span><span class="o">.</span><span class="n">s_token</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s">&quot;bigram&quot;</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;text&quot;</span><span class="p">:</span><span class="n">sentence</span><span class="p">,</span> <span class="s">&quot;align&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">,</span> <span class="s">&quot;report-all-factors&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">}</span>
+            <span class="n">translation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span><span class="o">.</span><span class="n">s_bigram</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span> <span class="o">==</span> <span class="s">&quot;unigram&quot;</span><span class="p">:</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;text&quot;</span><span class="p">:</span><span class="n">sentence</span><span class="p">,</span> <span class="s">&quot;align&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">,</span> <span class="s">&quot;report-all-factors&quot;</span><span class="p">:</span><span class="s">&quot;true&quot;</span><span class="p">}</span>
+            <span class="n">translation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span><span class="o">.</span><span class="n">s_unigram</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">translation</span>
+    
+    <span class="c">#this aligns the results of the moses translation to the original tokens</span>
+    <span class="c">#this is necessary to keep track of which word was transformed into which string</span>
+    <span class="k">def</span> <span class="nf">combine_trans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">trans</span><span class="p">,</span><span class="n">original</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	use dynamic alignment to align original tokens to translation tokens</span>
+<span class="sd">	</span>
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param trans: translation for the input strubg</span>
+<span class="sd">		:type trans: unicode string </span>
+<span class="sd">		:param original: the orignial string</span>
+<span class="sd">		:type type: unicode string</span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+
+<span class="sd">	&#39;&#39;&#39;</span>
+
+        <span class="c">#transList = trans[&#39;align&#39;]</span>
+        <span class="c">#wordsOri = original</span>
+        <span class="n">wordsTrans0</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;(\|UNK[BQk]{,1})+&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">trans</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">original</span><span class="p">,</span><span class="n">wordsTrans0</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+    
+    <span class="k">def</span> <span class="nf">convert_string_to_ngrams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span> <span class="n">ngram</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	convert string into a string split into ngrams with # as replacement for whitespace characters.</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param s: token string</span>
+<span class="sd">		:type s: unicode string </span>
+<span class="sd">		:param ngram: n in ngram</span>
+<span class="sd">		:type ngram: integer</span>
+<span class="sd">		:return: string in ngram format</span>
+<span class="sd">		:rtype: unicode string</span>
+<span class="sd">	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="c"># Lowercase string, replace spaces with #, add # for sentence start and end</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s">u&quot;#&quot;</span> <span class="o">+</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;#&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">u&quot;#&quot;</span>
+        <span class="c"># Pad all characters with spaces</span>
+        <span class="k">return</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="n">ngram</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">-</span><span class="n">ngram</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+    
+    <span class="k">def</span> <span class="nf">convert_ngrams_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">s</span><span class="p">,</span> <span class="n">ngram</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	convert ngram string into a token string.</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param s: ngram string</span>
+<span class="sd">		:type s: unicode string </span>
+<span class="sd">		:param ngram: n in ngram</span>
+<span class="sd">		:type ngram: integer</span>
+<span class="sd">		:return: string in token format</span>
+<span class="sd">		:rtype: unicode string</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">+</span><span class="s">&quot;#&quot;</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;  &quot;</span><span class="p">,</span><span class="s">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">strings</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">num</span><span class="p">,</span><span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+          <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">el</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">ngram</span><span class="p">:</span>
+              <span class="n">s</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngram</span><span class="p">):</span>
+            <span class="n">string</span> <span class="o">=</span> <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="n">n</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">x</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">s</span><span class="p">])</span> <span class="o">+</span> <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">strings</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;#&quot;</span><span class="p">,</span> <span class="s">&quot; &quot;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">strings</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="SMT_Token"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Token">[docs]</a><span class="k">class</span> <span class="nc">SMT_Token</span><span class="p">(</span><span class="n">SMT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This class contains functions with which the SMT on the token level can be performed. </span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">normalizer</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	**parameters**, **types**::</span>
+<span class="sd">    		:param normalizer: an object of the class Normalizer</span>
+<span class="sd">    		:type word: Normalizer object</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span> <span class="o">=</span> <span class="n">normalizer</span>
+        <span class="n">SMT</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        
+<div class="viewcode-block" id="SMT_Token.generate_alternatives"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Token.generate_alternatives">[docs]</a>    <span class="k">def</span> <span class="nf">generate_alternatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   	Generate suggestion</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+<span class="sd">	</span>
+<span class="sd">   	 &#39;&#39;&#39;</span>
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;run token module&quot;</span><span class="p">)</span>
+	<span class="c">#replace characters Moses cannot handle</span>
+        <span class="n">sentence_in</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;[&quot;</span><span class="p">,</span><span class="s">u&quot;ʘ&quot;</span><span class="p">)</span>
+        <span class="n">sentence_in</span> <span class="o">=</span> <span class="n">sentence_in</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;]&quot;</span><span class="p">,</span><span class="s">u&quot;ʨ&quot;</span><span class="p">)</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="n">sentences</span><span class="o">=</span><span class="p">[]</span>
+	<span class="c">#make sure the sentences is not longer than 50 words (Moses out of memory -&gt; search trees too big)</span>
+	<span class="c">#if so process 50 token long parts of the sentence separately	</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence_in</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+	        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence_in</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+        	    <span class="n">sentence_split</span><span class="o">=</span><span class="n">sentence_in</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+       		    <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence_split</span><span class="p">[:</span><span class="mi">50</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+       		    <span class="n">sentence_in</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence_split</span><span class="p">[</span><span class="mi">50</span><span class="p">:])</span>
+       		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+	       	        <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence_in</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence_in</span><span class="p">)</span>
+        <span class="n">output_sentences</span><span class="o">=</span><span class="p">[]</span>
+
+        <span class="n">resultList</span><span class="o">=</span><span class="p">[]</span>
+	<span class="n">log_sent</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+	<span class="c">#align each of the subsentence translations back to its input and combine the resulting lists of lists</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">SMT</span><span class="o">.</span><span class="n">run_moses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">,</span><span class="s">&quot;token&quot;</span><span class="p">)</span>
+	    <span class="n">log_sent</span><span class="o">+=</span><span class="s">&quot; &quot;</span><span class="o">+</span> <span class="n">trans</span><span class="p">[</span><span class="s">&quot;text&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʨ&quot;</span><span class="p">,</span><span class="s">&quot;]&quot;</span><span class="p">)</span>
+
+            <span class="n">resultList</span> <span class="o">+=</span> <span class="n">SMT</span><span class="o">.</span><span class="n">combine_trans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">trans</span><span class="p">[</span><span class="s">&quot;text&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʨ&quot;</span><span class="p">,</span><span class="s">&quot;]&quot;</span><span class="p">),</span><span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʨ&quot;</span><span class="p">,</span><span class="s">&quot;]&quot;</span><span class="p">))</span>
+
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">resultList</span><span class="p">)</span>
+         
+	<span class="n">smt_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;SMT CUT ME OUT &quot;</span><span class="o">+</span><span class="n">log_sent</span><span class="p">)</span>
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;token module finished&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">resultList</span>
+
+    
+        
+</div></div>
+<div class="viewcode-block" id="SMT_Unigram"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Unigram">[docs]</a><span class="k">class</span> <span class="nc">SMT_Unigram</span><span class="p">(</span><span class="n">SMT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This class contains functions with which the SMT on the unigram level can be performed. </span>
+<span class="sd">    &#39;&#39;&#39;</span> 
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">normalizer</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	**parameters**, **types**,**return types**::</span>
+<span class="sd">    		:param normalizer: an object of the class Normalizer</span>
+<span class="sd">    		:type word: Normalizer object</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>	
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span> <span class="o">=</span> <span class="n">normalizer</span>
+        <span class="n">SMT</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>   
+     
+
+        
+<div class="viewcode-block" id="SMT_Unigram.generate_alternatives"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Unigram.generate_alternatives">[docs]</a>    <span class="k">def</span> <span class="nf">generate_alternatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   	Generate suggestion</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+<span class="sd">	</span>
+<span class="sd">   	 &#39;&#39;&#39;</span>
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;run unigram module&quot;</span><span class="p">)</span>
+        <span class="n">ori_sent</span> <span class="o">=</span> <span class="n">sentence</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;[&quot;</span><span class="p">,</span><span class="s">u&quot;ʘ&quot;</span><span class="p">)</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;]&quot;</span><span class="p">,</span><span class="s">u&quot;ʨ&quot;</span><span class="p">)</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;#&quot;</span><span class="p">,</span><span class="s">u&quot;␄&quot;</span><span class="p">)</span>
+        <span class="n">sentences</span><span class="o">=</span><span class="p">[]</span>
+	<span class="c">#make sure the sentences is not longer than 50 characters (Moses out of memory -&gt; search trees too big)</span>
+	<span class="c">#if so process 50 token long parts of the sentence separately	</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+	        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">&gt;</span><span class="mi">50</span><span class="p">:</span>
+        	    <span class="n">sentence_split</span><span class="o">=</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+       		    <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence_split</span><span class="p">[:</span><span class="mi">50</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+       		    <span class="n">sentence</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence_split</span><span class="p">[</span><span class="mi">50</span><span class="p">:])</span>
+       		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+	       	        <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+        <span class="n">output_sentences</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">returnList</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">sent_char</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+	<span class="c">#combine alignments and sentences back to one output list</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+            
+            <span class="n">sent_char_part</span> <span class="o">=</span> <span class="n">SMT</span><span class="o">.</span><span class="n">convert_string_to_ngrams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">SMT</span><span class="o">.</span><span class="n">run_moses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sent_char_part</span><span class="p">,</span><span class="s">&quot;unigram&quot;</span><span class="p">)</span>
+                       
+
+            <span class="n">sent_char</span> <span class="o">+=</span><span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">sent_char_part</span>
+	    <span class="n">trans</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="s">&quot;text&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;#&quot;</span><span class="p">,</span><span class="s">&quot; &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;␄&quot;</span><span class="p">,</span><span class="s">u&quot;#&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʨ&quot;</span><span class="p">,</span><span class="s">&quot;]&quot;</span><span class="p">)</span>
+	    <span class="n">trans</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;(\|UNK[BQk]{,1})+&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">trans</span><span class="p">)</span>
+            <span class="n">returnList</span> <span class="o">+=</span> <span class="n">util</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʨ&quot;</span><span class="p">,</span><span class="s">&quot;]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;␄&quot;</span><span class="p">,</span><span class="s">u&quot;#&quot;</span><span class="p">),</span><span class="n">trans</span><span class="p">)</span>
+
+
+
+        <span class="k">return</span> <span class="n">returnList</span>
+
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">returnList</span><span class="p">)</span>
+
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;unigram module finished&quot;</span><span class="p">)</span>
+        
+        </div></div>
+<div class="viewcode-block" id="SMT_Bigram"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Bigram">[docs]</a><span class="k">class</span> <span class="nc">SMT_Bigram</span><span class="p">(</span><span class="n">SMT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This class contains functions with which the SMT on the bigram level can be performed. </span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">normalizer</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	**parameters**, **types**::</span>
+<span class="sd">    		:param normalizer: an object of the class Normalizer</span>
+<span class="sd">    		:type word: Normalizer object</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>	
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span> <span class="o">=</span> <span class="n">normalizer</span> 
+        <span class="n">SMT</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+
+    
+
+<div class="viewcode-block" id="SMT_Bigram.generate_alternatives"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Bigram.generate_alternatives">[docs]</a>    <span class="k">def</span> <span class="nf">generate_alternatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   	Generate suggestion</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+<span class="sd">	</span>
+<span class="sd">   	 &#39;&#39;&#39;</span>
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;start bigram module&quot;</span><span class="p">)</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="n">sentence</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;[&quot;</span><span class="p">,</span><span class="s">u&quot;ʘ&quot;</span><span class="p">)</span>
+        <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;]&quot;</span><span class="p">,</span><span class="s">u&quot;ʨ&quot;</span><span class="p">)</span>
+	<span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;#&quot;</span><span class="p">,</span><span class="s">u&quot;␄&quot;</span><span class="p">)</span>
+        <span class="n">sentences</span><span class="o">=</span><span class="p">[]</span>
+	<span class="c">#make sure the sentences is not longer than 50 character bigrams (Moses out of memory -&gt; search trees too big)</span>
+	<span class="c">#if so process 50 token long parts of the sentence separately	</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+	        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">&gt;</span> <span class="mi">50</span><span class="p">:</span>
+        	    <span class="n">sentence_split</span><span class="o">=</span><span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+       		    <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence_split</span><span class="p">[:</span><span class="mi">50</span><span class="p">])</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+       		    <span class="n">sentence</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sentence_split</span><span class="p">[</span><span class="mi">50</span><span class="p">:])</span>
+       		<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+	       	        <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sentences</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+        <span class="n">output_sentences</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">returnList</span><span class="o">=</span><span class="p">[]</span>
+	<span class="c">#combine the alignemnts of each of the subparts back to one result list</span>
+        <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+
+            <span class="n">sent_char</span> <span class="o">=</span> <span class="n">SMT</span><span class="o">.</span><span class="n">convert_string_to_ngrams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">SMT</span><span class="o">.</span><span class="n">run_moses</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sent_char</span><span class="p">,</span><span class="s">&quot;bigram&quot;</span><span class="p">)</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">trans</span><span class="p">[</span><span class="s">&quot;text&quot;</span><span class="p">])</span>
+            <span class="n">trans</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;(\|UNK[BQk]{,1})+&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="n">trans</span><span class="p">)</span>
+            <span class="n">translation</span><span class="o">=</span><span class="n">SMT</span><span class="o">.</span><span class="n">convert_ngrams_to_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">trans</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+            
+            <span class="n">translation</span> <span class="o">=</span> <span class="n">translation</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʨ&quot;</span><span class="p">,</span><span class="s">&quot;]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;␄&quot;</span><span class="p">,</span><span class="s">u&quot;#&quot;</span><span class="p">)</span>
+            <span class="n">returnList</span> <span class="o">+=</span> <span class="n">util</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">&quot;[&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʨ&quot;</span><span class="p">,</span><span class="s">&quot;]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;␄&quot;</span><span class="p">,</span><span class="s">u&quot;#&quot;</span><span class="p">),</span><span class="n">translation</span><span class="p">)</span>
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">returnList</span><span class="p">)</span>
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;bigram module finished&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">returnList</span>
+    </div></div>
+<div class="viewcode-block" id="SMT_Cascaded"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Cascaded">[docs]</a><span class="k">class</span> <span class="nc">SMT_Cascaded</span><span class="p">(</span><span class="n">SMT</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This class contains functions with which the SMT on first the token </span>
+<span class="sd">    and subsequently on the unigram level can be performed. </span>
+<span class="sd">    &#39;&#39;&#39;</span>    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">normalizer</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	**parameters**, **types**::</span>
+<span class="sd">    		:param normalizer: an object of the class Normalizer</span>
+<span class="sd">    		:type word: Normalizer object</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>	
+        <span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span> <span class="o">=</span> <span class="n">normalizer</span>
+        <span class="n">SMT</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="SMT_Cascaded.generate_alternatives"><a class="viewcode-back" href="../../../API.html#norm.modules.smt.SMT_Cascaded.generate_alternatives">[docs]</a>    <span class="k">def</span> <span class="nf">generate_alternatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   	Generate suggestion</span>
+
+<span class="sd">	**parameters**, **types**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+<span class="sd">	</span>
+<span class="sd">   	 &#39;&#39;&#39;</span>
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;cascaded module started&quot;</span><span class="p">)</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">SMT_Token</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span><span class="p">)</span>
+        <span class="c">#first call the token module</span>
+        <span class="n">original</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">token_list2</span> <span class="o">=</span> <span class="n">token</span><span class="o">.</span><span class="n">generate_alternatives</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+
+        <span class="n">tokSent</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+        <span class="n">uniSent</span><span class="o">=</span><span class="s">&quot;&quot;</span>
+	<span class="c">#combine the outout of token module to an input sentence for unigram module</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">token_list2</span><span class="p">)):</span>
+            <span class="n">tokSent</span> <span class="o">=</span> <span class="n">tokSent</span> <span class="o">+</span> <span class="n">token_list2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">&quot; &quot;</span>
+        <span class="n">tokSent</span> <span class="o">=</span> <span class="n">tokSent</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+	<span class="c">#run unigram module on output of token modle</span>
+        <span class="n">unigram</span> <span class="o">=</span> <span class="n">SMT_Unigram</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">normalizer</span><span class="p">)</span>
+        <span class="n">tok_ori</span><span class="o">=</span><span class="n">tokSent</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">returnList1</span> <span class="o">=</span> <span class="n">unigram</span><span class="o">.</span><span class="n">generate_alternatives</span><span class="p">(</span><span class="n">tokSent</span><span class="p">)</span>
+	<span class="c">#align the input back to the outout</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">returnList1</span><span class="p">)):</span>
+            <span class="n">uniSent</span> <span class="o">=</span> <span class="n">uniSent</span> <span class="o">+</span> <span class="n">returnList1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="s">&quot; &quot;</span>
+
+	<span class="n">results</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span><span class="n">uniSent</span><span class="p">)</span>
+                  
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+
+        <span class="n">smt_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;cascaded module finished&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+            
+    
+        </div></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sarah Schulz, Bart Desmet, Orphee DeClercq.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

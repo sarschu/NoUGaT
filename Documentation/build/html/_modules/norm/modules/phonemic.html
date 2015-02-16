@@ -1,0 +1,251 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>norm.modules.phonemic &mdash; NoUGaT 1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NoUGaT 1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../../index.html" class="fa fa-home"> NoUGaT</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#system-architecture">System architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#example-of-usage">Example of usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.data">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.normalizer">Main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.modules.abbreviation">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.util">Util</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">NoUGaT</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>norm.modules.phonemic</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for norm.modules.phonemic</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8       </span>
+
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">string</span>
+
+<span class="n">phonemic_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;norm.module.phonemic&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">alignment.sequence</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<span class="kn">from</span> <span class="nn">alignment.vocabulary</span> <span class="kn">import</span> <span class="n">Vocabulary</span>
+<span class="kn">from</span> <span class="nn">alignment.sequencealigner</span> <span class="kn">import</span> <span class="n">SimpleScoring</span><span class="p">,</span> <span class="n">GlobalSequenceAligner</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<div class="viewcode-block" id="Phonemic"><a class="viewcode-back" href="../../../API.html#norm.modules.phonemic.Phonemic">[docs]</a><span class="k">class</span> <span class="nc">Phonemic</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Access via web service the MBT grapeme-to-phoneme-to-grapheme conversion.</span>
+<span class="sd">    Implemented by Guy DePauw.</span>
+<span class="sd">	</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        
+        <span class="nb">super</span><span class="p">(</span><span class="n">Phonemic</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        
+
+<div class="viewcode-block" id="Phonemic.generate_alternatives"><a class="viewcode-back" href="../../../API.html#norm.modules.phonemic.Phonemic.generate_alternatives">[docs]</a>    <span class="k">def</span> <span class="nf">generate_alternatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   	Generate suggestion</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+<span class="sd">	</span>
+<span class="sd">   	 &#39;&#39;&#39;</span>
+        <span class="n">phonemic_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;start phonemic module&quot;</span><span class="p">)</span>
+        
+	<span class="c">#replace a whole bunch of special characters the learner cannot handle. Later replace it back.</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span><span class="s">&quot;%20&quot;</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;&amp;&quot;</span><span class="p">,</span><span class="s">u&quot;ʚ&quot;</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="s">&quot;%0A&quot;</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;|&quot;</span><span class="p">,</span><span class="s">u&quot;ʘ&quot;</span><span class="p">)</span>
+        <span class="n">t</span><span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;;&quot;</span><span class="p">,</span><span class="s">u&quot;Þ&quot;</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;-&quot;</span><span class="p">,</span><span class="s">u&quot;¥&quot;</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;#&quot;</span><span class="p">,</span><span class="s">u&quot;¤&quot;</span><span class="p">)</span>
+        <span class="n">t</span> <span class="o">=</span><span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\u200e</span><span class="s">&quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="c">#smt_log.info(&quot;run token module&quot;)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;phone_&quot;</span> <span class="o">+</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+	<span class="c">#call Antwerps webservice via wget</span>
+        <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&#39;wget&#39;</span><span class="p">,</span><span class="s">&#39;http://www.clips.uantwerpen.be:3000/g2p2g?text=&#39;</span><span class="o">+</span><span class="n">t</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">),</span><span class="s">&quot;-O&quot;</span><span class="p">,</span><span class="n">filename</span><span class="p">],</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> 
+        <span class="n">out</span><span class="p">,</span><span class="n">err</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
+        <span class="n">output</span><span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">,</span><span class="s">&quot;utf8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;¤&quot;</span><span class="p">,</span><span class="s">u&quot;#&quot;</span><span class="p">)</span>
+	<span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;¥&quot;</span><span class="p">,</span><span class="s">u&quot;-&quot;</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʚ&quot;</span><span class="p">,</span><span class="s">u&quot;&amp;&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;ʘ&quot;</span><span class="p">,</span><span class="s">u&quot;|&quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;%0A&quot;</span><span class="p">,</span><span class="s">u&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;£&quot;</span><span class="p">,</span><span class="s">u&quot; &quot;</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;%20&quot;</span><span class="p">,</span><span class="s">u&quot; &quot;</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">=</span><span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">u&quot;Þ&quot;</span><span class="p">,</span><span class="s">u&quot;;&quot;</span><span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+        <span class="n">phonemic_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+
+        <span class="n">returnList</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">align</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
+
+        	
+       	
+        <span class="n">phonemic_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">returnList</span><span class="p">)</span>
+        <span class="n">phonemic_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;finished phonemic module&quot;</span><span class="p">)</span>
+	
+        <span class="c">#smt_log.info(&quot;token module finished&quot;)</span>
+        <span class="k">return</span> <span class="n">returnList</span>
+    
+ </div></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sarah Schulz, Bart Desmet, Orphee DeClercq.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

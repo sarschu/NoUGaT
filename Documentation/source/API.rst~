@@ -1,0 +1,107 @@
+API
+===
+
+Preprocessing
+-------------
+.. automodule:: norm.data
+
+.. autoclass:: norm.data.Text
+   :members:
+   :private-members:
+
+.. automodule:: norm.prepro.rewrite
+
+.. autoclass:: norm.prepro.rewrite.Rewrite
+   :members:
+   :private-members:
+
+.. automodule:: norm.modules.flooding
+
+.. autoclass:: norm.modules.flooding.Flooding
+   :members:
+   :private-members:
+
+
+
+Main
+----
+.. automodule:: norm.normalizer
+
+.. autoclass:: norm.normalizer.Normalizer
+   :members:
+   :private-members:
+
+Modules
+-------
+.. automodule:: norm.modules.abbreviation
+
+.. autoclass:: norm.modules.abbreviation.Abbreviation
+   :members:
+   :private-members:	
+
+.. automodule:: norm.modules.compound
+
+.. autoclass:: norm.modules.compound.Compound
+   :members:
+   :private-members:
+
+.. automodule:: norm.modules.empty
+
+.. autoclass:: norm.modules.empty.Empty
+   :members:
+   :private-members:
+
+
+.. automodule:: norm.modules.new_NE
+
+.. autoclass:: norm.modules.new_NE.New_NE
+   :members:
+   :private-members:
+
+.. automodule:: norm.modules.original
+
+.. autoclass:: norm.modules.original.Original
+   :members:
+   :private-members:
+
+
+.. automodule:: norm.modules.phonemic
+
+.. autoclass:: norm.modules.phonemic.Phonemic
+   :members:
+   :private-members:
+
+.. automodule:: norm.modules.smt
+
+.. autoclass:: norm.modules.smt.SMT_Token
+   :members:
+   :private-members:
+
+.. autoclass:: norm.modules.smt.SMT_Cascaded
+   :members:
+   :private-members:
+
+.. autoclass:: norm.modules.smt.SMT_Unigram
+   :members:
+   :private-members:
+
+.. autoclass:: norm.modules.smt.SMT_Bigram
+   :members:
+   :private-members:
+
+
+.. automodule:: norm.modules.spellcheck
+
+.. autoclass:: norm.modules.spellcheck.Hunspell
+   :members:
+   :private-members:
+
+
+
+
+Util
+----
+
+.. automodule:: norm.util
+   :members:
+   :private-members:

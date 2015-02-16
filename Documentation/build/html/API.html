@@ -1,0 +1,1665 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API &mdash; NoUGaT 1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NoUGaT 1 documentation" href="index.html"/>
+        <link rel="prev" title="Tutorial" href="README.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="index.html" class="fa fa-home"> NoUGaT</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="README.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="README.html#system-architecture">System architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="README.html#example-of-usage">Example of usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="README.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-norm.data">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-norm.normalizer">Main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-norm.modules.abbreviation">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-norm.util">Util</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">NoUGaT</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>API</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/API.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-norm.data">
+<span id="preprocessing"></span><h2>Preprocessing<a class="headerlink" href="#module-norm.data" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="norm.data.Text">
+<em class="property">class </em><tt class="descclassname">norm.data.</tt><tt class="descname">Text</tt><big>(</big><em>text</em>, <em>n</em>, <em>r</em><big>)</big><a class="reference internal" href="_modules/norm/data.html#Text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.data.Text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a text, such as an SMS, a blogpost or a tweet</p>
+<dl class="method">
+<dt id="norm.data.Text._preprocess">
+<tt class="descname">_preprocess</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/norm/data.html#Text._preprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.data.Text._preprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>preprocess input text (tokenization, special character replacement)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.data.Text._validate_input">
+<tt class="descname">_validate_input</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/data.html#Text._validate_input"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.data.Text._validate_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>validate that input string is unicode</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">an input message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">input is a unicode string or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.prepro.rewrite"></span><dl class="class">
+<dt id="norm.prepro.rewrite.Rewrite">
+<em class="property">class </em><tt class="descclassname">norm.prepro.rewrite.</tt><tt class="descname">Rewrite</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class preprocesses the text including tokenization, special character replacement, 
+deletion of more than one whitespace.</p>
+<p>INPUT: line (&#64;janthans &#64;SvenOrnelis BBQ? Wie, wat , waar? :-D #aanwezig)</p>
+<p>OUTPUT: tokenized sentence with replacements (&#64;janthans &#64;SvenOrnelis BBQ? Wie, wat , waar? • aanwezig)</p>
+<p>Placeholders list sign &#8220;•&#8221;</p>
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.correct_at_tok">
+<tt class="descname">correct_at_tok</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.correct_at_tok" title="Permalink to this definition">¶</a></dt>
+<dd><p>correct missed tokenization with &#64;</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with whitespace deleted after &#64;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.reduce_allcaps">
+<tt class="descname">reduce_allcaps</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.reduce_allcaps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.reduce_allcaps" title="Permalink to this definition">¶</a></dt>
+<dd><p>lowercase sequences of more than 1 uppercased letter</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with replacement characters for smileys</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.replace_hashtags">
+<tt class="descname">replace_hashtags</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.replace_hashtags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.replace_hashtags" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace #tags like #workisboring with a special character</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with replacement characters for hash tags</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.replace_hyperlinks">
+<tt class="descname">replace_hyperlinks</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.replace_hyperlinks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.replace_hyperlinks" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace hyperlink with replacement character</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with replacement characters for hyperlinks</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.replace_linebreaks">
+<tt class="descname">replace_linebreaks</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.replace_linebreaks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.replace_linebreaks" title="Permalink to this definition">¶</a></dt>
+<dd><p>delete the string &lt;LINEBREAK&gt;</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string without &lt;LINEBREAK&gt;</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.replace_pipe">
+<tt class="descname">replace_pipe</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.replace_pipe"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.replace_pipe" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace | wirht &#8221; &#8220;</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with replacement of |</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.replace_smileys">
+<tt class="descname">replace_smileys</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.replace_smileys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.replace_smileys" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace all smiley characters with a special character</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with replacement characters for smileys</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.replace_spaces">
+<tt class="descname">replace_spaces</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.replace_spaces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.replace_spaces" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace all spaces with just one space</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with max one whitespace in a row</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.replace_tags">
+<tt class="descname">replace_tags</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.replace_tags"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.replace_tags" title="Permalink to this definition">¶</a></dt>
+<dd><p>replace [*] with replacement character</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string with replacement characters for tags</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.rewrite_text">
+<tt class="descname">rewrite_text</tt><big>(</big><em>t</em>, <em>norm</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.rewrite_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.rewrite_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>call all the replacement and preprocesing methods on the input</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param norm:</th><td class="field-body">a normalizer for language information</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type norm:</th><td class="field-body">Normalizer object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the preprocessed string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.tokenize">
+<tt class="descname">tokenize</tt><big>(</big><em>t</em>, <em>norm</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.tokenize"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.tokenize" title="Permalink to this definition">¶</a></dt>
+<dd><p>tokenize the text with a special pretokenizer and a perl script from TreeTagger</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param norm:</th><td class="field-body">a normalizer for language information</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type norm:</th><td class="field-body">Normalizer object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the tokenized string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.tokenize_placeholders">
+<tt class="descname">tokenize_placeholders</tt><big>(</big><em>t</em><big>)</big><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.tokenize_placeholders" title="Permalink to this definition">¶</a></dt>
+<dd><p>correct the tokenization of the special characters</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">string with special characters being tokenized</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.prepro.rewrite.Rewrite.tolower">
+<tt class="descname">tolower</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/prepro/rewrite.html#Rewrite.tolower"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.prepro.rewrite.Rewrite.tolower" title="Permalink to this definition">¶</a></dt>
+<dd><p>lowercase string</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">input text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the string in lowercase</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">Unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.flooding"></span><dl class="class">
+<dt id="norm.modules.flooding.Flooding">
+<em class="property">class </em><tt class="descclassname">norm.modules.flooding.</tt><tt class="descname">Flooding</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding" title="Permalink to this definition">¶</a></dt>
+<dd><p>this class corrects the flooding of characters and punctionation,
+it reduces flooding to one and two characters and checks whether a correct word emerges
+with the help of spell checking. In case it does it returns the whole sentence
+It also corrects punctuation flooding. It does that in any case.</p>
+<dl class="method">
+<dt id="norm.modules.flooding.Flooding.check_for_correctness">
+<tt class="descname">check_for_correctness</tt><big>(</big><em>token</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding.check_for_correctness"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding.check_for_correctness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if token is marked as correct by hunspell or is found in the abbreviation dictionary.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">original token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">word is correct word or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.flooding.Flooding.correct_flooding_to_one">
+<tt class="descname">correct_flooding_to_one</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding.correct_flooding_to_one"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding.correct_flooding_to_one" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct flooding characters using regex matches to one repetitions.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">original token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">tuple: first part gives information if the suggested token is marked as correct by hunspell, corrected token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">tuple(boolean, string)</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>Reduce all character flooding to one subsequent characters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.flooding.Flooding.correct_flooding_to_two">
+<tt class="descname">correct_flooding_to_two</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding.correct_flooding_to_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding.correct_flooding_to_two" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct flooding characters using regex matches to two repetitions.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">original token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">tuple: first part gives information if the suggested token is marked as correct by hunspell, corrected token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">tuple(boolean, string)</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>Reduce all character flooding to two subsequent characters. For Dutch the e is 
+corrected to 3 repetitions first to check if an existing word emerges.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.flooding.Flooding.correct_punctuation_flooding">
+<tt class="descname">correct_punctuation_flooding</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding.correct_punctuation_flooding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding.correct_punctuation_flooding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct flooding punctuations using regex matches.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">original token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">punctuation flooding corrected token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>Reduce all punctuation flooding to two subsequent characters, just dots are 
+corrected to three.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.flooding.Flooding.flooding_correct">
+<tt class="descname">flooding_correct</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding.flooding_correct"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding.flooding_correct" title="Permalink to this definition">¶</a></dt>
+<dd><p>Correct flooding characters and character combinations in t.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>Two versions of the corrected string are compiled: correction to one or two repetitions. In case
+the correction to one character produces a valid word, take this one, otherwise correct to two characters.</p>
+<p>The sentence is corrected word by word and joined in the end.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.flooding.Flooding.hunspell_check">
+<tt class="descname">hunspell_check</tt><big>(</big><em>word</em><big>)</big><a class="reference internal" href="_modules/norm/modules/flooding.html#Flooding.hunspell_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.flooding.Flooding.hunspell_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>check word for spelling</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param word:</th><td class="field-body">a word</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type word:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">return True or False dependent on word being in dict or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-norm.normalizer">
+<span id="main"></span><h2>Main<a class="headerlink" href="#module-norm.normalizer" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="norm.normalizer.Normalizer">
+<em class="property">class </em><tt class="descclassname">norm.normalizer.</tt><tt class="descname">Normalizer</tt><big>(</big><em>language='nl'</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pipeline for text normalization</p>
+<p>Programm flow:
+it gets the preprocessed text
+it flooding corrects
+its sends this corrected version to the
+different modules
+it takes the output per sentence and writes to phrase table
+it starts the moses decoder with this phrase table
+it returns the normalized sentence</p>
+<dl class="method">
+<dt id="norm.normalizer.Normalizer._call_moses">
+<tt class="descname">_call_moses</tt><big>(</big><em>s</em>, <em>phrase_table</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer._call_moses"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer._call_moses" title="Permalink to this definition">¶</a></dt>
+<dd><p>decide for a combination of suggestions</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param s:</th><td class="field-body">is the original message that has also been forwarded to the modules</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type s:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param phrase_table:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">is the path to the phrase table</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type phrase_table:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">return normalized sentences</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>Moses is called including the phrase table that has been generated from the suggestions.
+Using a language model and the phrase table with its features, Moses translates the             original sentence into the normalized sentence.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer._check_hunspell">
+<tt class="descname">_check_hunspell</tt><big>(</big><em>word</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer._check_hunspell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer._check_hunspell" title="Permalink to this definition">¶</a></dt>
+<dd><p>check word for spelling</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param word:</th><td class="field-body">a word</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type word:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">return True or False dependent on word being in dict or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer._generate_phrase_table">
+<tt class="descname">_generate_phrase_table</tt><big>(</big><em>phrase_dict</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer._generate_phrase_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer._generate_phrase_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>generate the per line entry of a phrase table</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param phrase_dict:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">a dictionary holding all suggestions, with the information of the modules that suggested it and the original token</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type phrase_dict:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">dictionary</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>iterate over the phrase_dict and compile an etry of the followng format for each 
+suggestion</p>
+<p>ori ||| sug ||| 0 1 0 1 0 1 ....</p>
+<p>the 0 and 1 indicate which module returned the suggestion. The order of the modules is 
+given my the initialization of the modules.
+The last 0 or 1 says if hunspell can find the suggestion as a word or not.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer._kill_server_mode">
+<tt class="descname">_kill_server_mode</tt><big>(</big><em>proc</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer._kill_server_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer._kill_server_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>kill Moses server mode with the help of the process id.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param proc:</th><td class="field-body">the process ideas collected when starting up server modes</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type proc:</th><td class="field-body">list of integers</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>forces the kill of all running processes with the respective process id</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer._normalize_sentence">
+<tt class="descname">_normalize_sentence</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer._normalize_sentence"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer._normalize_sentence" title="Permalink to this definition">¶</a></dt>
+<dd><p>normalize the message, running all modueles and combining their output</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">preprocessed and flooding corrected text message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">return normalized sentences</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of strings</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>first all modules generate their suggestion, then these suggestions are collected
+and written out to a phrase table, then the decision module generates one normalized            sentence</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer._write_phrase_table">
+<tt class="descname">_write_phrase_table</tt><big>(</big><em>phrase_dict</em>, <em>phrase_dict_location</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer._write_phrase_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer._write_phrase_table" title="Permalink to this definition">¶</a></dt>
+<dd><p>write out the phrase table for the run of the decision module</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param phrase_dict:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">a dictionary holding all suggestions, with the information of the modules that suggested it and the original token</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type phrase_dict:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">dictionary</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param phrase_dict_location:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">the path to the phrase table</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">type phrase_dict_location:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer.initialize_modules">
+<tt class="descname">initialize_modules</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer.initialize_modules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer.initialize_modules" title="Permalink to this definition">¶</a></dt>
+<dd><p>initialize the different module objects</p>
+<p>The module objects are initialized onces for every normalization run. The 
+order of the initialization is important since this order is the same as the 
+weights for the modules in the ini files.</p>
+<p>For English there are 10 modules:</p>
+<p>Word_Split, Compound, Original, Abbreviation, SMT_Token, SMT_Unigram, SMT_Bigram, SMT_Cascaded, Transliterate, Hunspell</p>
+<p>For Dutch there are 11 modules:</p>
+<p>Word_Split, Compound, Phonemic, Original, Abbreviation, SMT_Token, SMT_Unigram, SMT_Bigram, SMT_Cascaded, Transliterate, Hunspell</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer.normalize_text">
+<tt class="descname">normalize_text</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer.normalize_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer.normalize_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the normalized sentences in a list</p>
+<p>the preprocessed text is first flooding corrected
+then the messages are sent into the pipeline and the normalized sentence is returned</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">object from class Text, containing the original and the preprocessed string</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">Text object</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">return normalized sentences</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of strings</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.normalizer.Normalizer.start_server_mode">
+<tt class="descname">start_server_mode</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/norm/normalizer.html#Normalizer.start_server_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.normalizer.Normalizer.start_server_mode" title="Permalink to this definition">¶</a></dt>
+<dd><p>start Moses server mode for all three SMT systems</p>
+<p>the SMT modules use the Moses server mode which is started in the beginning of 
+one run for each of the three modes: Token, Unigram and Bigram. They run on a random 
+port between 30000 and 40000. The pids are stored and the server mode is stopped in case of
+error or sucessful finish. Each Moses server waits for a certain amount of seconds after         start up to ensure it has enough time to run properly in the background.
+The server modes use the .ini files which are located in ../static/Moses/decoder_files. In              the ini files themselves you can see which phrase table or language model is accessed.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-norm.modules.abbreviation">
+<span id="modules"></span><h2>Modules<a class="headerlink" href="#module-norm.modules.abbreviation" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="norm.modules.abbreviation.Abbreviation">
+<em class="property">class </em><tt class="descclassname">norm.modules.abbreviation.</tt><tt class="descname">Abbreviation</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/abbreviation.html#Abbreviation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.abbreviation.Abbreviation" title="Permalink to this definition">¶</a></dt>
+<dd><p>This module resolves the most frequent abbreviations
+in social media content</p>
+<dl class="method">
+<dt id="norm.modules.abbreviation.Abbreviation.check_hunspell">
+<tt class="descname">check_hunspell</tt><big>(</big><em>word</em><big>)</big><a class="reference internal" href="_modules/norm/modules/abbreviation.html#Abbreviation.check_hunspell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.abbreviation.Abbreviation.check_hunspell" title="Permalink to this definition">¶</a></dt>
+<dd><p>check word for spelling</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param word:</th><td class="field-body">a word</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type word:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">return True or False dependent on word being in dict or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.abbreviation.Abbreviation.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/abbreviation.html#Abbreviation.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.abbreviation.Abbreviation.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>Looks up a token in an abbreviation lexicon and returns the long version in case the token is found.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.compound"></span><dl class="class">
+<dt id="norm.modules.compound.Compound">
+<em class="property">class </em><tt class="descclassname">norm.modules.compound.</tt><tt class="descname">Compound</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/compound.html#Compound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.compound.Compound" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which subsequent words can be checked for &#8220;compoundness&#8221;.
+If the spellchecker (hunspell) doesn&#8217;t complain about the combination of subsequent words,
+it is returned as an option.</p>
+<dl class="method">
+<dt id="norm.modules.compound.Compound.check_hunspell">
+<tt class="descname">check_hunspell</tt><big>(</big><em>word</em><big>)</big><a class="reference internal" href="_modules/norm/modules/compound.html#Compound.check_hunspell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.compound.Compound.check_hunspell" title="Permalink to this definition">¶</a></dt>
+<dd><p>return hunspell result</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param word:</th><td class="field-body">a word</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type word:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">True or False dependent on whether a word is in hunspell dict or not</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">boolean</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.compound.Compound.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/compound.html#Compound.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.compound.Compound.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>Compounds out of two subsequent tokens are built. Hunspell checks if the word is a correct word.</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.empty"></span><dl class="class">
+<dt id="norm.modules.empty.Empty">
+<em class="property">class </em><tt class="descclassname">norm.modules.empty.</tt><tt class="descname">Empty</tt><a class="reference internal" href="_modules/norm/modules/empty.html#Empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.empty.Empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assuming that words can be superfluous, this module returns an empty string.</p>
+<dl class="method">
+<dt id="norm.modules.empty.Empty.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/empty.html#Empty.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.empty.Empty.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.new_NE"></span><dl class="class">
+<dt id="norm.modules.new_NE.New_NE">
+<em class="property">class </em><tt class="descclassname">norm.modules.new_NE.</tt><tt class="descname">New_NE</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE" title="Permalink to this definition">¶</a></dt>
+<dd><p>This module uses a crf model to predict whether a token is a 
+named entity or not.</p>
+<p>This modules in not included by default.</p>
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE._replace_atreplies">
+<tt class="descname">_replace_atreplies</tt><big>(</big><em>t</em><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE._replace_atreplies"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE._replace_atreplies" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#64;replies are returned as u&#8221;ਊ&#8221;.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param t:</th><td class="field-body">token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">t itself or  u&#8221;ਊ&#8221; in case the token is an &#64;-reply</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE._run_named_entity_replace">
+<tt class="descname">_run_named_entity_replace</tt><big>(</big><em>text_string</em><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE._run_named_entity_replace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE._run_named_entity_replace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rule based component of the module. Search for upper case first letters, search in gazetteer list,</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name" colspan="2">param text_string:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">flooding corrected original sentence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type t:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[u&#8221;ਊ&#8221;]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE.clean_up">
+<tt class="descname">clean_up</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE.clean_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE.clean_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete the directory with all texsis files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run a crf classifier to find out if a token is a NE or not.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the ਊ token to hand over the information that a token is an NE of the form [[ori,[ori]],  [ori2,  [u&#8217;ਊ&#8217;]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+<p>The information if a token is an NE or not is not included directly but can be used as a feature in the phrase table.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE.get_labels">
+<tt class="descname">get_labels</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE.get_labels"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE.get_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>For each word in the input sentence the lable (NE or not) is extracted from the file predicted by crf.
+If the lable is 1 the character u&#8221;ਊ&#8221; is returned as a suggestion, if not the original token is returned.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[u&#8221;ਊ&#8221;]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE.make_feature_file">
+<tt class="descname">make_feature_file</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE.make_feature_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE.make_feature_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>An external python script (language specific) is called to compile the feature files used for NE prediction.
+The script expects the following input:</p>
+<ul class="simple">
+<li>language</li>
+<li>texsis POS file</li>
+<li>texsis tok file</li>
+<li>gazetteer file</li>
+<li>celex file</li>
+<li>output file</li>
+</ul>
+<p>All these files can be found in the static directory.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE.run_texsis">
+<tt class="descname">run_texsis</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE.run_texsis"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE.run_texsis" title="Permalink to this definition">¶</a></dt>
+<dd><p>Texsis is used to pos tag the sentence. This information is used as a feature in the crf classification.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.new_NE.New_NE.write_file">
+<tt class="descname">write_file</tt><big>(</big><em>sent</em><big>)</big><a class="reference internal" href="_modules/norm/modules/new_NE.html#New_NE.write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.new_NE.New_NE.write_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>The sentence is written to a file (one word per line) and stored in a directory. Texsis can be run on this directory to 
+generate pos tags for each word in the sentence.</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.original"></span><dl class="class">
+<dt id="norm.modules.original.Original">
+<em class="property">class </em><tt class="descclassname">norm.modules.original.</tt><tt class="descname">Original</tt><a class="reference internal" href="_modules/norm/modules/original.html#Original"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.original.Original" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions which return the original
+as an option</p>
+<dl class="method">
+<dt id="norm.modules.original.Original.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/original.html#Original.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.original.Original.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.phonemic"></span><dl class="class">
+<dt id="norm.modules.phonemic.Phonemic">
+<em class="property">class </em><tt class="descclassname">norm.modules.phonemic.</tt><tt class="descname">Phonemic</tt><a class="reference internal" href="_modules/norm/modules/phonemic.html#Phonemic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.phonemic.Phonemic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Access via web service the MBT grapeme-to-phoneme-to-grapheme conversion.
+Implemented by Guy DePauw.</p>
+<dl class="method">
+<dt id="norm.modules.phonemic.Phonemic.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/phonemic.html#Phonemic.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.phonemic.Phonemic.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.smt"></span><dl class="class">
+<dt id="norm.modules.smt.SMT_Token">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Token</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Token" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on the token level can be performed.</p>
+<dl class="method">
+<dt id="norm.modules.smt.SMT_Token.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Token.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Token.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="norm.modules.smt.SMT_Cascaded">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Cascaded</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Cascaded"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Cascaded" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on first the token 
+and subsequently on the unigram level can be performed.</p>
+<dl class="method">
+<dt id="norm.modules.smt.SMT_Cascaded.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Cascaded.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Cascaded.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="norm.modules.smt.SMT_Unigram">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Unigram</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Unigram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Unigram" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on the unigram level can be performed.</p>
+<dl class="method">
+<dt id="norm.modules.smt.SMT_Unigram.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Unigram.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Unigram.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="norm.modules.smt.SMT_Bigram">
+<em class="property">class </em><tt class="descclassname">norm.modules.smt.</tt><tt class="descname">SMT_Bigram</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Bigram"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Bigram" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which the SMT on the bigram level can be performed.</p>
+<dl class="method">
+<dt id="norm.modules.smt.SMT_Bigram.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/smt.html#SMT_Bigram.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.smt.SMT_Bigram.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.spellcheck"></span><dl class="class">
+<dt id="norm.modules.spellcheck.Hunspell">
+<em class="property">class </em><tt class="descclassname">norm.modules.spellcheck.</tt><tt class="descname">Hunspell</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/spellcheck.html#Hunspell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.spellcheck.Hunspell" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions that check a word with the hunspell spell checker.
+In case it is recognized as incorrectly spelled, alternative spelling options are suggested</p>
+<dl class="method">
+<dt id="norm.modules.spellcheck.Hunspell.find_suggestions">
+<tt class="descname">find_suggestions</tt><big>(</big><em>word</em><big>)</big><a class="reference internal" href="_modules/norm/modules/spellcheck.html#Hunspell.find_suggestions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.spellcheck.Hunspell.find_suggestions" title="Permalink to this definition">¶</a></dt>
+<dd><p>use the hunspell spell checker for correct suggestions. take the first suggestion (levenshtein distance smallest).</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param word:</th><td class="field-body">a token</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">hunspell corrected suggestion</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">unicode string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="norm.modules.spellcheck.Hunspell.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/spellcheck.html#Hunspell.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.spellcheck.Hunspell.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-norm.modules.wordsplit"></span><dl class="class">
+<dt id="norm.modules.wordsplit.Word_Split">
+<em class="property">class </em><tt class="descclassname">norm.modules.wordsplit.</tt><tt class="descname">Word_Split</tt><big>(</big><em>normalizer</em><big>)</big><a class="reference internal" href="_modules/norm/modules/wordsplit.html#Word_Split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.wordsplit.Word_Split" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class contains functions with which subsequent words can be checked for &#8220;compoundness&#8221;.
+It uses word frequencies from the cgn corpus to decide if a word should be split or not.
+It makes use of the decompounder perl script that comes together with Moses.</p>
+<dl class="method">
+<dt id="norm.modules.wordsplit.Word_Split.generate_alternatives">
+<tt class="descname">generate_alternatives</tt><big>(</big><em>sentence</em><big>)</big><a class="reference internal" href="_modules/norm/modules/wordsplit.html#Word_Split.generate_alternatives"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.modules.wordsplit.Word_Split.generate_alternatives" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate suggestion</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param sentence:</th><td class="field-body">flooding corrected original message</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type sentence:</th><td class="field-body">unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-norm.util">
+<span id="util"></span><h2>Util<a class="headerlink" href="#module-norm.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="norm.util.align">
+<tt class="descclassname">norm.util.</tt><tt class="descname">align</tt><big>(</big><em>ori</em>, <em>tgt</em><big>)</big><a class="reference internal" href="_modules/norm/util.html#align"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.util.align" title="Permalink to this definition">¶</a></dt>
+<dd><p>align two sentences using the python sequence aligner</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param ori:</th><td class="field-body">an original sentence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type ori:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param tgt:</th><td class="field-body">a reference sentence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type tgt:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[sug2]]]</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">list of lists</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="norm.util.calculate_cer">
+<tt class="descclassname">norm.util.</tt><tt class="descname">calculate_cer</tt><big>(</big><em>ref</em>, <em>hyp</em><big>)</big><a class="reference internal" href="_modules/norm/util.html#calculate_cer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.util.calculate_cer" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate CER with the help of dynamic programming alignment</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param ref:</th><td class="field-body">a reference sentence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type ref:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param hyp:</th><td class="field-body">a hypothesis sentence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type hyp:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the CER between ref and hyp</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="norm.util.calculate_wer">
+<tt class="descclassname">norm.util.</tt><tt class="descname">calculate_wer</tt><big>(</big><em>r</em>, <em>h</em><big>)</big><a class="reference internal" href="_modules/norm/util.html#calculate_wer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.util.calculate_wer" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate WER with the help of dynamic programming alignment</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param ref:</th><td class="field-body">a reference sentence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type ref:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">param hyp:</th><td class="field-body">a hypothesis sentence</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type hyp:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">the WER between ref and hyp</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">float</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="norm.util.get_random_phrase_table_path">
+<tt class="descclassname">norm.util.</tt><tt class="descname">get_random_phrase_table_path</tt><big>(</big><em>prefix='phrase_table'</em><big>)</big><a class="reference internal" href="_modules/norm/util.html#get_random_phrase_table_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.util.get_random_phrase_table_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a random phrase table name with a prefix and a 6 character long capital-letter-digits-string</p>
+<p>file will be located in ../log/phrasetables</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param prefix:</th><td class="field-body">optional: prefix for the temporary file, default = phrase_table</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type prefix:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">path to the temporary file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="norm.util.get_random_tmp_eval_path">
+<tt class="descclassname">norm.util.</tt><tt class="descname">get_random_tmp_eval_path</tt><big>(</big><em>prefix='phrase_table'</em><big>)</big><a class="reference internal" href="_modules/norm/util.html#get_random_tmp_eval_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.util.get_random_tmp_eval_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a random evaluation directory name with a prefix and a 6 character long capital-letter-digits-string</p>
+<p>file will be located in /tmp/eval_options/</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param prefix:</th><td class="field-body">optional: prefix for the temporary file, default = phrase_table</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type prefix:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">path to the temporary file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="norm.util.get_random_tmp_path">
+<tt class="descclassname">norm.util.</tt><tt class="descname">get_random_tmp_path</tt><big>(</big><em>prefix='norm'</em><big>)</big><a class="reference internal" href="_modules/norm/util.html#get_random_tmp_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#norm.util.get_random_tmp_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>get a random path consisting of the prefix name and a 6 character long capital-letter-digits-string</p>
+<p>file will be located in /tmp</p>
+<dl class="docutils">
+<dt><strong>parameters</strong>, <strong>types</strong>,**return**,**return types**::</dt>
+<dd><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param prefix:</th><td class="field-body">optional: prefix for the temporary file, default = norm</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type prefix:</th><td class="field-body">Unicode string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">return:</th><td class="field-body">path to the temporary file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rtype:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="README.html" class="btn btn-neutral" title="Tutorial"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sarah Schulz, Bart Desmet, Orphee DeClercq.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

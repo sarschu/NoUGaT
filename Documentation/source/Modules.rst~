@@ -1,0 +1,58 @@
+Modules
+=======
+
+.. automodule:: norm.modules.abbreviation
+
+.. autoclass:: norm.modules.abbreviation.Abbreviation
+
+.. automodule:: norm.modules.compound
+
+.. autoclass:: norm.modules.compound.Compound
+
+.. automodule:: norm.modules.empty
+
+.. autoclass:: norm.modules.empty.Empty
+
+.. automodule:: norm.modules.flooding
+
+.. autoclass:: norm.modules.flooding.Flooding
+
+.. automodule:: norm.modules.new_NE
+
+.. autoclass:: norm.modules.new_NE.New_NE
+
+.. automodule:: norm.modules.original
+
+.. autoclass:: norm.modules.original.Original
+
+
+.. automodule:: norm.modules.phonemic
+
+.. autoclass:: norm.modules.phonemic.Phonemic
+
+.. automodule:: norm.modules.smt
+
+.. autoclass:: norm.modules.smt.SMT_Token
+
+.. autoclass:: norm.modules.smt.SMT_Cascaded
+
+.. autoclass:: norm.modules.smt.SMT_Unigram
+
+.. autoclass:: norm.modules.smt.SMT_Bigram
+
+
+.. automodule:: norm.modules.spellcheck
+
+.. autoclass:: norm.modules.spellcheck.Hunspell
+
+
+.. automodule:: norm.modules.transliterate
+
+.. autoclass:: norm.modules.transliterate.Transliterate
+
+
+.. automodule:: norm.modules.wordsplit
+
+.. autoclass:: norm.modules.wordsplit.Word_Split
+
+

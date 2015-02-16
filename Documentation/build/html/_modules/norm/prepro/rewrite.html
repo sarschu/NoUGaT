@@ -1,0 +1,507 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>norm.prepro.rewrite &mdash; NoUGaT 1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NoUGaT 1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../../index.html" class="fa fa-home"> NoUGaT</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#system-architecture">System architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#example-of-usage">Example of usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.data">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.normalizer">Main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.modules.abbreviation">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.util">Util</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">NoUGaT</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>norm.prepro.rewrite</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for norm.prepro.rewrite</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8</span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">nltk</span>
+<span class="kn">import</span> <span class="nn">socket</span>
+<span class="n">v</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="c">#logfiles</span>
+<span class="n">rewrite_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;norm.rewrite&quot;</span><span class="p">)</span>
+<span class="n">logfile</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">logfile</span>
+
+<span class="c">###all the substitution </span>
+<span class="n">pretok1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;([^ !\?\.,;:A-Z]+)([.!;,?:]+)([^ !\?,\.;:]+)&quot;</span><span class="p">)</span>
+<span class="n">pretok2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;([^ !\?\.,;:]+)([.!;,?:]+)([^ !\?,\.;:A-Z]+)&quot;</span><span class="p">)</span>
+<span class="n">pretok3</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;([^ !\?\.,;:A-Z]+)([.!;,?:]+)&quot;</span><span class="p">)</span>
+<span class="n">pretok4</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;( &#39;)([A-Za-z0-9]{2,}) &quot;</span><span class="p">)</span>
+<span class="n">smi1</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;B-?(\)\)?)&quot;</span><span class="p">)</span>
+<span class="n">smi2</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;&lt;+/*3+&quot;</span><span class="p">)</span>
+<span class="n">smi3</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;\^[_]?\^&quot;</span><span class="p">)</span>
+<span class="n">smi4</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;\([a-zA-Z]{,2}\)&quot;</span><span class="p">)</span>
+<span class="n">smi5</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;[O&gt;C}\]\[)(]+[-~]?[;:x8=][)(]?&quot;</span><span class="p">)</span>
+<span class="n">smi6</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;[;:=][&#39;,]?[-~]?([&#39;3s/xSdDpPcCoO#@*$|\[\]\)]+|\)|\(\(?)=?&quot;</span><span class="p">)</span>
+<span class="n">smi7</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;[;:8=][&#39;,]?[-~]?([sxSdDpPcCoO#@*$|\[\]\)]+|\)|\(\(?)=?&quot;</span><span class="p">)</span>
+<span class="n">smi8</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;x[&#39;,]?[-~]?([3sSdDPcCO#@*$|\[\]\)]+|\)|\(\(?)=?&quot;</span><span class="p">)</span>
+<span class="n">smi9</span><span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;\[[^\[ \]]+\]&quot;</span><span class="p">)</span>
+<span class="n">smi10</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;[-~]+&#39;&quot;</span><span class="p">)</span>
+<span class="n">smi11</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;[oO0n][.,][n0oO]&quot;</span><span class="p">)</span>
+<span class="n">smil12</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot; xp &quot;</span><span class="p">)</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;\[[a-z=]+\]&quot;</span><span class="p">)</span>  
+<span class="n">rep1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;\[[^\[ \]]*\]&quot;</span><span class="p">)</span>
+<span class="n">rep2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;#ERROR!:parse&quot;</span><span class="p">)</span> 
+<span class="n">low</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;([A-Z]{2,})&#39;</span><span class="p">)</span>
+<span class="n">email</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&#39;[^ ]+\@[^ ]+\.[^ \n]+&#39;</span><span class="p">)</span>
+<span class="n">pipe</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;\|&quot;</span><span class="p">)</span>     
+<span class="n">hyp1</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;http:/\S+&quot;</span><span class="p">)</span>
+<span class="n">hyp2</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;www\.\S+&quot;</span><span class="p">)</span> 
+<span class="n">tok1</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;[!,;.&#39;?] [!.,;?]&quot;</span><span class="p">)</span> 
+<span class="n">hasht</span> <span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">r&quot;#([\w\d]+)&quot;</span><span class="p">)</span>
+<span class="n">spaces</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot; +&quot;</span><span class="p">)</span>
+<span class="n">at</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">&quot;@ &quot;</span><span class="p">)</span>
+<span class="n">placehol1</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">ur&quot;([^ ])([•±∞™])&quot;</span><span class="p">)</span>
+<span class="n">placehol2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s">ur&quot;([•±∞™])([^ ])&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Rewrite"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite">[docs]</a><span class="k">class</span> <span class="nc">Rewrite</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	This class preprocesses the text including tokenization, special character replacement, </span>
+<span class="sd">	deletion of more than one whitespace.</span>
+
+
+
+<span class="sd">	INPUT: line (@janthans @SvenOrnelis BBQ? Wie, wat , waar? :-D #aanwezig) </span>
+
+<span class="sd">	OUTPUT: tokenized sentence with replacements (@janthans @SvenOrnelis BBQ? Wie, wat , waar? • aanwezig)</span>
+
+<span class="sd">	Placeholders list sign &quot;•&quot; </span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">normalizer</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	**parameters**, **types**::</span>
+<span class="sd">    		:param normalizer: an object of the class Normalizer</span>
+<span class="sd">    		:type word: Normalizer object</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="nb">super</span><span class="p">(</span><span class="n">Rewrite</span><span class="p">,</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+	
+	
+
+<div class="viewcode-block" id="Rewrite.replace_smileys"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.replace_smileys">[docs]</a>    <span class="k">def</span> <span class="nf">replace_smileys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	replace all smiley characters with a special character	</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with replacement characters for smileys</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi3</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi4</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi5</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi6</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi7</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi8</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi10</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smi11</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">smil12</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="c">#    t = re.sub(r&quot;([^ ])±&quot;, r&quot;\1 •&quot;, t)</span>
+	<span class="k">if</span> <span class="n">v</span><span class="p">:</span> <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	    
+	<span class="k">return</span> <span class="n">t</span>
+</div>
+<div class="viewcode-block" id="Rewrite.tolower"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.tolower">[docs]</a>    <span class="k">def</span> <span class="nf">tolower</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	lowercase string</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string in lowercase</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Rewrite.reduce_allcaps"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.reduce_allcaps">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_allcaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	lowercase sequences of more than 1 uppercased letter</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with replacement characters for smileys</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">t</span> <span class="o">=</span> <span class="n">low</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">tolower</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">t</span>
+
+	</div>
+<div class="viewcode-block" id="Rewrite.replace_tags"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.replace_tags">[docs]</a>    <span class="k">def</span> <span class="nf">replace_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	replace [*] with replacement character </span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with replacement characters for tags</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">t</span> <span class="o">=</span> <span class="n">rep1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">rep2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span> <span class="p">)</span>
+	<span class="k">if</span> <span class="n">v</span><span class="p">:</span> <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	    
+	<span class="k">return</span> <span class="n">t</span>
+</div>
+<div class="viewcode-block" id="Rewrite.replace_pipe"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.replace_pipe">[docs]</a>    <span class="k">def</span> <span class="nf">replace_pipe</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	replace | wirht &quot; &quot;</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with replacement of |</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">t</span> <span class="o">=</span> <span class="n">pipe</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">t</span>
+
+
+</div>
+<div class="viewcode-block" id="Rewrite.replace_hyperlinks"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.replace_hyperlinks">[docs]</a>    <span class="k">def</span> <span class="nf">replace_hyperlinks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	replace hyperlink with replacement character</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with replacement characters for hyperlinks</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">t</span> <span class="o">=</span> <span class="n">hyp1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">hyp2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">email</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">v</span><span class="p">:</span> <span class="k">print</span> <span class="nb">repr</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	    
+	<span class="k">return</span> <span class="n">t</span>
+
+</div>
+<div class="viewcode-block" id="Rewrite.tokenize"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.tokenize">[docs]</a>    <span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">,</span><span class="n">norm</span><span class="p">):</span><span class="c">#post tokenize &#39;?</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	tokenize the text with a special pretokenizer and a perl script from TreeTagger</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:param norm: a normalizer for language information</span>
+<span class="sd">		:type norm: Normalizer object		</span>
+<span class="sd">		:return: the tokenized string</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+
+	<span class="c">#pretokenize</span>
+	<span class="c">#doesnt split uppercasE.Uppercase (protect N.V.A)</span>
+        <span class="c">#splits cases like word.Word -&gt; word . Word</span>
+	<span class="c">#splits cases like word!word -&gt; word ! word</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">pretok1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\g&lt;1&gt; \g&lt;2&gt; \g&lt;3&gt;&quot;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+	<span class="c">#splits cases like worD.word worD . word</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">pretok2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\g&lt;1&gt; \g&lt;2&gt; \g&lt;3&gt;&quot;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+	<span class="c">#splits cases like word. -&gt; word .</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">pretok3</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;\g&lt;1&gt; \g&lt;2&gt;&quot;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+	   
+	<span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+	<span class="c">#run the TreeTagger tokenizer</span>
+	<span class="n">echo</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="n">t</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf8&quot;</span><span class="p">)],</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">)</span>
+	<span class="k">if</span> <span class="n">norm</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s">&quot;nl&quot;</span><span class="p">:</span>
+	    <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;perl&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/tokenizer/utf8-tokenize.perl&quot;</span><span class="p">,</span><span class="s">&quot;-a&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/tokenizer/dutch-abbreviations&quot;</span><span class="p">],</span><span class="n">stdin</span><span class="o">=</span><span class="n">echo</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+	    <span class="n">out</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">elif</span> <span class="n">norm</span><span class="o">.</span><span class="n">language</span> <span class="o">==</span> <span class="s">&quot;en&quot;</span><span class="p">:</span>
+            <span class="n">proc</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;perl&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/tokenizer/utf8-tokenize.perl&quot;</span><span class="p">,</span> <span class="s">&quot;-e&quot;</span><span class="p">],</span><span class="n">stdin</span><span class="o">=</span><span class="n">echo</span><span class="o">.</span><span class="n">stdout</span><span class="p">,</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+	    <span class="n">out</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>    
+	<span class="n">t</span> <span class="o">=</span><span class="nb">unicode</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="s">&quot; &quot;</span><span class="p">),</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+
+	<span class="n">found</span> <span class="o">=</span> <span class="n">tok1</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	<span class="k">while</span> <span class="n">found</span> <span class="o">!=</span><span class="p">[]:</span>
+            <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="n">found</span><span class="p">:</span>
+		<span class="n">replacement</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span><span class="s">&quot;&quot;</span><span class="p">)</span>
+		<span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">element</span><span class="p">,</span><span class="n">replacement</span><span class="p">)</span>
+            <span class="n">found</span> <span class="o">=</span> <span class="n">tok1</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+	<span class="k">return</span> <span class="n">t</span>    
+
+</div>
+<div class="viewcode-block" id="Rewrite.replace_hashtags"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.replace_hashtags">[docs]</a>    <span class="k">def</span> <span class="nf">replace_hashtags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	replace #tags like #workisboring with a special character</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with replacement characters for hash tags</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">t</span> <span class="o">=</span> <span class="n">hasht</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">u&quot;•&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	    
+	<span class="k">return</span> <span class="n">t</span>
+</div>
+<div class="viewcode-block" id="Rewrite.replace_spaces"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.replace_spaces">[docs]</a>    <span class="k">def</span> <span class="nf">replace_spaces</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	replace all spaces with just one space</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with max one whitespace in a row</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">t</span> <span class="o">=</span> <span class="n">spaces</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+	<span class="k">return</span> <span class="n">t</span>
+
+</div>
+<div class="viewcode-block" id="Rewrite.replace_linebreaks"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.replace_linebreaks">[docs]</a>    <span class="k">def</span> <span class="nf">replace_linebreaks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	delete the string &lt;LINEBREAK&gt;</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string without &lt;LINEBREAK&gt;</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="k">return</span> <span class="n">t</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;&lt;LINEBREAK&gt;&quot;</span><span class="p">,</span> <span class="s">u&quot;&quot;</span><span class="p">)</span>
+	    
+
+	</div>
+<div class="viewcode-block" id="Rewrite.rewrite_text"><a class="viewcode-back" href="../../../API.html#norm.prepro.rewrite.Rewrite.rewrite_text">[docs]</a>    <span class="k">def</span> <span class="nf">rewrite_text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">,</span> <span class="n">norm</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	call all the replacement and preprocesing methods on the input</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:param norm: a normalizer for language information</span>
+<span class="sd">		:type norm: Normalizer object	</span>
+<span class="sd">		:return: the preprocessed string</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+
+	<span class="n">rewrite_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;rewrite text&quot;</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="c"># Strip leading and trailing whitespace</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">+</span><span class="n">t</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">replace_linebreaks</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="c"># Replace &lt;LINEBREAK&gt; by special character</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">replace_hashtags</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">replace_hyperlinks</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">replace_tags</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">replace_smileys</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">replace_pipe</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="c"># For Moses</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="n">norm</span><span class="p">)</span> <span class="c"># Pretokenise and run Texsis</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">correct_at_tok</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="c"># Corrects tokenized at-replies (remove space after @)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">tokenize_placeholders</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">replace_spaces</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="c"># Correct space flooding to 1 space</span>
+	<span class="n">t</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+	<span class="n">rewrite_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;text rewritten&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">t</span>
+
+
+	<span class="k">def</span> <span class="nf">correct_at_tok</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+	    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	    correct missed tokenization with @</span>
+
+<span class="sd">	    **parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: the string with whitespace deleted after @</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+	    <span class="n">t</span> <span class="o">=</span> <span class="n">at</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">&quot;@&quot;</span><span class="p">,</span><span class="n">t</span><span class="p">)</span>
+	    <span class="k">return</span> <span class="n">t</span>
+	    
+	    
+	<span class="k">def</span> <span class="nf">tokenize_placeholders</span><span class="p">(</span><span class="n">t</span><span class="p">):</span>
+	    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	    correct the tokenization of the special characters</span>
+
+<span class="sd">	    **parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">    		:param t: input text</span>
+<span class="sd">    		:type t: Unicode string	</span>
+<span class="sd">		:return: string with special characters being tokenized</span>
+<span class="sd">		:rtype: Unicode string	</span>
+<span class="sd">	    &#39;&#39;&#39;</span>
+	     <span class="c">#print t.encode(&#39;utf8&#39;)</span>
+	    <span class="n">before_t</span> <span class="o">=</span> <span class="n">placehol1</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">ur&quot;\1 \2&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+	    <span class="c">#print before_t.encode(&#39;utf8&#39;)</span>
+	    <span class="n">after_t</span>  <span class="o">=</span> <span class="n">placehol2</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">ur&quot;\1 \2&quot;</span><span class="p">,</span> <span class="n">before_t</span><span class="p">)</span>
+	    <span class="c">#print after_t.encode(&#39;utf8&#39;)</span>
+	    <span class="k">return</span> <span class="n">after_t</span>
+
+	</div></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sarah Schulz, Bart Desmet, Orphee DeClercq.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

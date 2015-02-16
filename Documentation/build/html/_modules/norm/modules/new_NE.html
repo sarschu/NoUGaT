@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>norm.modules.new_NE &mdash; NoUGaT 1 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="top" title="NoUGaT 1 documentation" href="../../../index.html"/>
+        <link rel="up" title="Module code" href="../../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        <a href="../../../index.html" class="fa fa-home"> NoUGaT</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+        
+            <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#system-architecture">System architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../README.html#example-of-usage">Example of usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../README.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../API.html">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.data">Preprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.normalizer">Main</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.modules.abbreviation">Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../API.html#module-norm.util">Util</a></li>
+</ul>
+</li>
+</ul>
+
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../../index.html">NoUGaT</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      
+    <li>norm.modules.new_NE</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            
+  <h1>Source code for norm.modules.new_NE</h1><div class="highlight"><pre>
+<span class="c">#!/usr/bin/env python</span>
+<span class="c"># encoding: utf-8  </span>
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">codecs</span>
+<span class="kn">import</span> <span class="nn">util</span>
+<span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">ne_log</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;norm.module.named_entity&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="New_NE"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE">[docs]</a><span class="k">class</span> <span class="nc">New_NE</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    This module uses a crf model to predict whether a token is a </span>
+<span class="sd">    named entity or not. </span>
+
+<span class="sd">    This modules in not included by default.</span>
+
+<span class="sd">    &#39;&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">normalizer</span><span class="p">):</span>
+	<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	**parameters**, **types**::</span>
+<span class="sd">    		:param normalizer: an object of the class Normalizer</span>
+<span class="sd">    		:type word: Normalizer object</span>
+
+<span class="sd">	The language, and the language-dependent gazetteer are initialized.</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	
+        <span class="nb">super</span><span class="p">(</span><span class="n">New_NE</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">=</span> <span class="n">normalizer</span><span class="o">.</span><span class="n">language</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span> <span class="o">=</span>  <span class="n">util</span><span class="o">.</span><span class="n">get_random_tmp_path</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span><span class="s">&quot;nl&quot;</span><span class="p">:</span>
+            <span class="n">gaz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/gaz_dutch.json&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span> <span class="s">&quot;en&quot;</span><span class="p">:</span>
+            <span class="n">gaz</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/gaz_english.json&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gazjson</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">gaz</span><span class="p">)</span>
+    
+<div class="viewcode-block" id="New_NE.generate_alternatives"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE.generate_alternatives">[docs]</a>    <span class="k">def</span> <span class="nf">generate_alternatives</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sentence</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">   	Run a crf classifier to find out if a token is a NE or not.</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the ਊ token to hand over the information that a token is an NE of the form [[ori,[ori]],	[ori2,	[u&#39;ਊ&#39;]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+
+<span class="sd">	The information if a token is an NE or not is not included directly but can be used as a feature in the phrase table. </span>
+<span class="sd">	</span>
+<span class="sd">   	 &#39;&#39;&#39;</span>
+
+        <span class="n">ne_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;start named entity module&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_texsis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">make_feature_file</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_crf</span><span class="p">()</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_labels</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clean_up</span><span class="p">()</span>
+        <span class="n">ne_log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+        <span class="n">ne_log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;finished named entity module&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+    </div>
+<div class="viewcode-block" id="New_NE.run_texsis"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE.run_texsis">[docs]</a>    <span class="k">def</span> <span class="nf">run_texsis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Texsis is used to pos tag the sentence. This information is used as a feature in the crf classification.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span> <span class="s">&quot;nl&quot;</span><span class="p">:</span>    
+        	<span class="n">tex</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;pos&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="p">,</span><span class="s">&quot;nl&quot;</span><span class="p">],</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        	<span class="n">tex</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span><span class="s">&quot;en&quot;</span><span class="p">:</span>
+        	<span class="n">tex</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;pos&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="p">,</span><span class="s">&quot;en&quot;</span><span class="p">],</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        	<span class="n">tex</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+                </div>
+<div class="viewcode-block" id="New_NE.write_file"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE.write_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">sent</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	The sentence is written to a file (one word per line) and stored in a directory. Texsis can be run on this directory to </span>
+<span class="sd">	generate pos tags for each word in the sentence. </span>
+
+<span class="sd">	**parameters**, **types**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s">&#39;mkdir &#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="p">)</span>
+        <span class="n">out_file</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/texsis.tok&quot;</span><span class="p">,</span><span class="s">&quot;w&quot;</span><span class="p">,</span><span class="s">&quot;utf8&quot;</span><span class="p">)</span>
+        <span class="n">words</span> <span class="o">=</span> <span class="n">sent</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">words</span><span class="p">:</span>
+            <span class="n">out_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">word</span><span class="o">+</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+        <span class="n">out_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    </div>
+<div class="viewcode-block" id="New_NE.make_feature_file"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE.make_feature_file">[docs]</a>    <span class="k">def</span> <span class="nf">make_feature_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	An external python script (language specific) is called to compile the feature files used for NE prediction.</span>
+<span class="sd">	The script expects the following input:</span>
+
+<span class="sd">	* language</span>
+<span class="sd">	* texsis POS file</span>
+<span class="sd">	* texsis tok file</span>
+<span class="sd">	* gazetteer file</span>
+<span class="sd">	* celex file</span>
+<span class="sd">	* output file</span>
+<span class="sd">	</span>
+<span class="sd">	All these files can be found in the static directory.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="c">#os.system(&quot;python &quot;+util.STATIC_DIR+&quot;/NE/make_features.py nl &quot;+self.texsis_dir+&quot;/texsis.pos &quot;+self.texsis_dir+&quot;/texsis.tok &quot;+util.STATIC_DIR+&quot;/NE/gazetteer &quot;+util.STATIC_DIR+&quot;/NE/celex /tmp/featurefile&quot;)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span> <span class="s">&quot;nl&quot;</span><span class="p">:</span>
+            <span class="n">ff</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;python&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/make_features_dutch.py&quot;</span><span class="p">,</span><span class="s">&quot;nl&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/texsis.pos&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/texsis.tok&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/gazetteer.dutch&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/celex_dutch&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/featurefile&quot;</span><span class="p">],</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span> <span class="s">&quot;en&quot;</span><span class="p">:</span>
+            <span class="n">ff</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;python&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/make_features_english.py&quot;</span><span class="p">,</span><span class="s">&quot;en&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/texsis.pos&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/texsis.tok&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/gazetteer.english&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/celex_english&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/featurefile&quot;</span><span class="p">],</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">ff</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        </div>
+    <span class="k">def</span> <span class="nf">run_crf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/ne_tagged&quot;</span><span class="p">,</span><span class="s">&quot;w&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span> <span class="s">&quot;nl&quot;</span><span class="p">:</span>
+            <span class="n">crf</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;/usr/bin/crf_test&quot;</span><span class="p">,</span><span class="s">&quot;-m&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/model_dutch&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/featurefile&quot;</span><span class="p">],</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">lang</span> <span class="o">==</span> <span class="s">&quot;en&quot;</span><span class="p">:</span>
+            <span class="n">crf</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span><span class="p">([</span><span class="s">&quot;/usr/bin/crf_test&quot;</span><span class="p">,</span><span class="s">&quot;-m&quot;</span><span class="p">,</span><span class="n">util</span><span class="o">.</span><span class="n">STATIC_DIR</span><span class="o">+</span><span class="s">&quot;/NE/model_english&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/featurefile&quot;</span><span class="p">],</span><span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span><span class="n">shell</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+        <span class="n">crf</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="n">output</span><span class="o">=</span><span class="n">crf</span><span class="o">.</span><span class="n">communicate</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    
+        <span class="c">#os.system(&quot;/usr/local/bin/crf_test -m &quot;+util.STATIC_DIR+&quot;/NE/NE_model /tmp/featurefile &gt; /tmp/ne_tagged&quot;)</span>
+    
+<div class="viewcode-block" id="New_NE.get_labels"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE.get_labels">[docs]</a>    <span class="k">def</span> <span class="nf">get_labels</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sentence</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	</span>
+<span class="sd">	For each word in the input sentence the lable (NE or not) is extracted from the file predicted by crf.</span>
+<span class="sd">	If the lable is 1 the character u&quot;ਊ&quot; is returned as a suggestion, if not the original token is returned.</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param sentence: flooding corrected original message</span>
+<span class="sd">		:type sentence: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[u&quot;ਊ&quot;]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">split_sent</span> <span class="o">=</span> <span class="n">sentence</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">ne_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="o">+</span><span class="s">&quot;/ne_tagged&quot;</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">ne_lines</span> <span class="o">=</span> <span class="n">ne_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="n">result_rules</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_run_named_entity_replace</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">num</span><span class="p">,</span><span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ne_lines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="n">token</span> <span class="o">=</span> <span class="n">split_sent</span><span class="p">[</span><span class="n">num</span><span class="p">]</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="s">&quot;1&quot;</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">unicode</span><span class="p">(</span><span class="n">token</span><span class="p">),</span> <span class="p">[</span><span class="s">u&quot;ਊ&quot;</span><span class="p">]])</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_replace_atreplies</span><span class="p">(</span><span class="n">token</span><span class="p">)</span><span class="o">==</span><span class="s">u&quot;ਊ&quot;</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">unicode</span><span class="p">(</span><span class="n">token</span><span class="p">),</span> <span class="p">[</span><span class="s">u&quot;ਊ&quot;</span><span class="p">]])</span>
+                <span class="k">elif</span> <span class="n">result_rules</span><span class="p">[</span><span class="n">num</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="o">==</span><span class="p">[</span><span class="s">u&quot;ਊ&quot;</span><span class="p">]:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">unicode</span><span class="p">(</span><span class="n">token</span><span class="p">),</span> <span class="p">[</span><span class="s">u&quot;ਊ&quot;</span><span class="p">]])</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">unicode</span><span class="p">(</span><span class="n">token</span><span class="p">),</span> <span class="p">[</span><span class="nb">unicode</span><span class="p">(</span><span class="n">token</span><span class="p">)]])</span>
+                
+        <span class="n">ne_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">results</span>
+</div>
+<div class="viewcode-block" id="New_NE._replace_atreplies"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE._replace_atreplies">[docs]</a>    <span class="k">def</span> <span class="nf">_replace_atreplies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">t</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	</span>
+<span class="sd">	@replies are returned as u&quot;ਊ&quot;.</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param t: token</span>
+<span class="sd">		:type t: unicode string </span>
+<span class="sd">		:return: t itself or  u&quot;ਊ&quot; in case the token is an @-reply</span>
+<span class="sd">		:rtype: list of lists</span>
+
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&quot;@[\w\d]+&quot;</span><span class="p">,</span> <span class="s">u&quot;ਊ&quot;</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">t</span>
+
+</div>
+<div class="viewcode-block" id="New_NE.clean_up"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE.clean_up">[docs]</a>    <span class="k">def</span> <span class="nf">clean_up</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Delete the directory with all texsis files.</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">texsis_dir</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="New_NE._run_named_entity_replace"><a class="viewcode-back" href="../../../API.html#norm.modules.new_NE.New_NE._run_named_entity_replace">[docs]</a>    <span class="k">def</span> <span class="nf">_run_named_entity_replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">text_string</span><span class="p">):</span>
+	<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">	Rule based component of the module. Search for upper case first letters, search in gazetteer list,</span>
+
+<span class="sd">	**parameters**, **types**,**return**,**return types**::</span>
+<span class="sd">		:param text_string: flooding corrected original sentence</span>
+<span class="sd">		:type t: unicode string </span>
+<span class="sd">		:return: original tokens aligned with the suggestion of the form [[ori,[sug]],[ori2,[u&quot;ਊ&quot;]]]</span>
+<span class="sd">		:rtype: list of lists</span>
+<span class="sd">	</span>
+<span class="sd">	&#39;&#39;&#39;</span>
+        <span class="n">ori</span> <span class="o">=</span> <span class="n">text_string</span>
+        <span class="n">returnlist</span><span class="o">=</span><span class="p">[]</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text_string</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)):</span>
+            <span class="n">upper_token</span> <span class="o">=</span> <span class="bp">False</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span><span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">&gt;</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;!&quot;</span><span class="p">,</span><span class="s">&quot;.&quot;</span><span class="p">,</span><span class="s">&quot;?&quot;</span><span class="p">,</span><span class="s">&quot;-&quot;</span><span class="p">,</span><span class="s">&quot;:&quot;</span><span class="p">,</span><span class="s">&quot;...&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">islower</span><span class="p">():</span>
+                    <span class="n">upper_token</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">if</span> <span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">gazjson</span> <span class="ow">or</span> <span class="n">upper_token</span><span class="p">:</span>
+                <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">unicode</span><span class="p">(</span><span class="n">ori</span><span class="p">[</span><span class="n">i</span><span class="p">]),[</span><span class="s">u&quot;ਊ&quot;</span><span class="p">]])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">returnlist</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">unicode</span><span class="p">(</span><span class="n">ori</span><span class="p">[</span><span class="n">i</span><span class="p">]),[</span><span class="n">text</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()]])</span> 
+            
+        
+       
+        <span class="k">return</span> <span class="n">returnlist</span>       
+        </div></div>
+</pre></div>
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sarah Schulz, Bart Desmet, Orphee DeClercq.
+    </p>
+  </div>
+
+  <a href="https://github.com/snide/sphinx_rtd_theme">Sphinx theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
