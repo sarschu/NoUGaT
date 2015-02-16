@@ -1,0 +1,49 @@
+#!/usr/bin/env python
+# encoding: utf-8
+'''
+Created on May 30, 2013
+
+@author: sarah
+'''
+import hunspell
+import logging
+spellcheck_log = logging.getLogger("norm.module.spellcheck")
+class Hunspell(object):
+    '''
+    This class contains functions that check a word with the hunspell spell checker.
+    In case it is recognized as wrongly spelled, alternative spelling options are suggested
+    '''
+
+    def __init__(self,normalizer):
+        self.normalizer = normalizer
+        super(Hunspell,self).__init__()
+    
+    #check and suggest alternatives if word is wrongly spelled
+    def find_suggestions(self,word):
+        language = self.normalizer.language
+        if language == "en":
+            hobj = hunspell.HunSpell('/usr/share/hunspell/en_US.dic', '/usr/share/hunspell/en_US.aff')
+        elif language == "nl":
+            hobj = hunspell.HunSpell('/usr/share/hunspell/nl.dic', '/usr/share/hunspell/nl.aff')
+        suggestions = []
+        if hobj.spell(word.encode("utf-8")) == False:                   
+            suggestions = hobj.suggest(word.encode("utf-8"))
+        return suggestions
+
+    def generate_alternatives(self,sentence):
+        spellcheck_log.info("start spell checker")
+        words = sentence.split()
+        results =[]
+        for word in words:
+            options =[]
+            #ignore the replacement characters
+            if word not in [u"•",u"±",u"∞",u"™"]:
+                options = self.find_suggestions(word)
+            optionsUni =[]
+            if options != []:
+                for o in options:
+                    optionsUni.append(unicode(o,"utf-8"))
+                results.append([word,optionsUni])
+        spellcheck_log.info("finished spell checker")
+        return results
+            
