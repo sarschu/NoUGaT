@@ -1,5 +1,5 @@
 # NoUGaT
-system for normalization of user-generated content
+system for normalization of user-generated content. This is the underlying code. The static files containing all models cannot be made available here. Therefore, the code cannot be executed. However, if one includes their own models (language models, translation models), this code can be used as the base architecture.
 
 Tutorial
 ========
@@ -10,7 +10,7 @@ Version 1.0
 
 Date 15th November 2014
 
-contact: Sarah.Schulz@Ugent.be
+contact: Sarschu@gmail.com
 
 The Normalizer converts User Generated Contents into a normalized version that can be further processed with NLP tools. 
 It has been trained on three different genres of UGC namely Twitter data, SMS and Netlog. It works for Dutch as well as for English. 
