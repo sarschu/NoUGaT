@@ -17,7 +17,7 @@ It has been trained on three different genres of UGC namely Twitter data, SMS an
 
 
 System architecture
-^^^^^^^^^^^^^^^^^^^
+===================
 
 The normalization pipeline consists of different more or less independent modules.
 
